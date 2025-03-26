@@ -1,0 +1,229 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Admin Dashboard - Crafted Journeys{% endblock %}
+
+{% block content %}
+<div class="admin-header">
+    <div>
+        <h1 class="admin-title">Dashboard</h1>
+        <p class="admin-subtitle">Welcome back, admin. Manage your travel experiences.</p>
+    </div>
+    <div>
+        <div class="btn-group">
+            <a href="{{ url_for('admin.packages') }}" class="btn btn-primary">
+                <i class="fas fa-suitcase me-2"></i> Manage Packages
+            </a>
+            <a href="{{ url_for('admin.locations') }}" class="btn btn-primary">
+                <i class="fas fa-map-marker-alt me-2"></i> Manage Locations
+            </a>
+            <a href="{{ url_for('admin.inquiries') }}" class="btn btn-primary">
+                <i class="fas fa-envelope me-2"></i> View Inquiries
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Statistics Cards -->
+<div class="admin-stats">
+    <div class="stats-card">
+        <div class="stats-icon orange">
+            <i class="fas fa-suitcase"></i>
+        </div>
+        <div class="stats-content">
+            <h3>{{ package_count }}</h3>
+            <p>Available travel experiences</p>
+        </div>
+    </div>
+    
+    <div class="stats-card">
+        <div class="stats-icon blue">
+            <i class="fas fa-map-marker-alt"></i>
+        </div>
+        <div class="stats-content">
+            <h3>{{ location_count }}</h3>
+            <p>Available locations</p>
+        </div>
+    </div>
+    
+    <div class="stats-card">
+        <div class="stats-icon yellow">
+            <i class="fas fa-envelope"></i>
+        </div>
+        <div class="stats-content">
+            <h3>{{ inquiry_count }}</h3>
+            <p>Customer inquiries received</p>
+        </div>
+    </div>
+    
+    <div class="stats-card">
+        <div class="stats-icon green">
+            <i class="fas fa-hourglass-half"></i>
+        </div>
+        <div class="stats-content">
+            <h3>{{ inquiry_awaiting_count }}</h3>
+            <p>Awaiting response</p>
+        </div>
+    </div>
+</div>
+
+<!-- Analytics Overview -->
+<div class="row">
+    <div class="col-md-6">
+        <div class="admin-card">
+            <h2 class="admin-card-title">Inquiry Status</h2>
+            <div class="chart-container">
+                <canvas id="inquiryStatusChart" data-pending="{{ pending_count }}" data-contacted="{{ contacted_count }}" data-resolved="{{ resolved_count }}"></canvas>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="admin-card">
+            <h2 class="admin-card-title">Packages by Category</h2>
+            <div class="chart-container">
+                <canvas id="packagesCategoryChart" data-categories="{{ package_count|tojson }}"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Activities -->
+<div class="recent-activity">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="activity-card">
+                <div class="activity-card-header">
+                    <h3>Recent Inquiries</h3>
+                    <a href="{{ url_for('admin.inquiries') }}" class="text-white">View All <i class="fas fa-arrow-right ms-1"></i></a>
+                </div>
+                <div class="activity-card-body">
+                    {% if system_updates %}
+                        {% for update in system_updates if update.type == 'inquiry' %}
+                            <div class="activity-item">
+                                <div class="activity-icon yellow">
+                                    <i class="fas fa-envelope"></i>
+                                </div>
+                                <div class="activity-content">
+                                    <div class="activity-message">{{ update.message }}</div>
+                                    <div class="activity-time">{{ update.date.strftime('%d %b %Y, %H:%M') }}</div>
+                                </div>
+                            </div>
+                        {% else %}
+                            <div class="text-center py-4">
+                                <p>No recent inquiries</p>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="text-center py-4">
+                            <p>No recent inquiries</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="activity-card">
+                <div class="activity-card-header">
+                    <h3>System Updates</h3>
+                    <span class="text-white-50">Recent Activity</span>
+                </div>
+                <div class="activity-card-body">
+                    {% if system_updates %}
+                        {% for update in system_updates %}
+                            <div class="activity-item">
+                                {% if update.type == 'package' %}
+                                    <div class="activity-icon orange">
+                                        <i class="fas fa-suitcase"></i>
+                                    </div>
+                                {% elif update.type == 'location' %}
+                                    <div class="activity-icon blue">
+                                        <i class="fas fa-map-marker-alt"></i>
+                                    </div>
+                                {% elif update.type == 'inquiry' %}
+                                    <div class="activity-icon yellow">
+                                        <i class="fas fa-envelope"></i>
+                                    </div>
+                                {% else %}
+                                    <div class="activity-icon green">
+                                        <i class="fas fa-info-circle"></i>
+                                    </div>
+                                {% endif %}
+                                <div class="activity-content">
+                                    <div class="activity-message">{{ update.message }}</div>
+                                    <div class="activity-time">{{ update.date.strftime('%d %b %Y, %H:%M') }}</div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="text-center py-4">
+                            <p>No recent system updates</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Actions -->
+<div class="quick-actions">
+    <h2 class="admin-card-title">Quick Actions</h2>
+    <div class="row">
+        <div class="col-md-2 col-sm-4 mb-3">
+            <div class="action-card">
+                <div class="action-icon">
+                    <i class="fas fa-plus"></i>
+                </div>
+                <h4>Add New Package</h4>
+                <p>Create a new travel experience</p>
+                <a href="{{ url_for('admin.add_package') }}" class="stretched-link"></a>
+            </div>
+        </div>
+        
+        <div class="col-md-2 col-sm-4 mb-3">
+            <div class="action-card">
+                <div class="action-icon">
+                    <i class="fas fa-map-pin"></i>
+                </div>
+                <h4>Add New Location</h4>
+                <p>Add a new destination to the system</p>
+                <a href="{{ url_for('admin.add_location') }}" class="stretched-link"></a>
+            </div>
+        </div>
+        
+        <div class="col-md-2 col-sm-4 mb-3">
+            <div class="action-card">
+                <div class="action-icon">
+                    <i class="fas fa-reply"></i>
+                </div>
+                <h4>Respond to Inquiries</h4>
+                <p>Handle pending customer requests</p>
+                <a href="{{ url_for('admin.inquiries') }}" class="stretched-link"></a>
+            </div>
+        </div>
+        
+        <div class="col-md-2 col-sm-4 mb-3">
+            <div class="action-card">
+                <div class="action-icon">
+                    <i class="fas fa-chart-bar"></i>
+                </div>
+                <h4>View Reports</h4>
+                <p>Review business analytics</p>
+                <a href="{{ url_for('admin.analytics') }}" class="stretched-link"></a>
+            </div>
+        </div>
+        
+        <div class="col-md-2 col-sm-4 mb-3">
+            <div class="action-card">
+                <div class="action-icon">
+                    <i class="fas fa-cog"></i>
+                </div>
+                <h4>Settings</h4>
+                <p>Configure system preferences</p>
+                <a href="#" class="stretched-link"></a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,255 @@
+{% extends "base.html" %}
+
+{% block title %}Contact Us - Crafted Journeys{% endblock %}
+
+{% block content %}
+<!-- Contact Hero -->
+<section class="page-hero contact-hero">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 text-center">
+                <h1 class="hero-title">Contact Us</h1>
+                <p class="hero-subtitle">We're here to help you plan your perfect Indian journey</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Contact Section -->
+<section class="contact-section section-padding">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="contact-info">
+                    <h2>Get in Touch</h2>
+                    <p>Have questions about our services or need help planning your journey? Our travel experts are ready to assist you with personalized recommendations and detailed information about our experiences.</p>
+                    
+                    <div class="contact-details">
+                        <div class="contact-item">
+                            <div class="contact-icon">
+                                <i class="fas fa-map-marker-alt"></i>
+                            </div>
+                            <div class="contact-text">
+                                <h4>Our Location</h4>
+                                <p>G10 Broadway Ventures, Sevasi TP-2<br>Vadodara 391410, India</p>
+                            </div>
+                        </div>
+                        
+                        <div class="contact-item">
+                            <div class="contact-icon">
+                                <i class="fas fa-phone-alt"></i>
+                            </div>
+                            <div class="contact-text">
+                                <h4>Phone Number</h4>
+                                <p>+91 780 283 7648</p>
+                                <p>+91 878 029 6209</p>
+                            </div>
+                        </div>
+                        
+                        <div class="contact-item">
+                            <div class="contact-icon">
+                                <i class="fas fa-envelope"></i>
+                            </div>
+                            <div class="contact-text">
+                                <h4>Email Address</h4>
+                                <p>info@craftedjourney.com</p>
+                                <p>support@craftedjourney.com</p>
+                            </div>
+                        </div>
+                        
+                        <div class="contact-item">
+                            <div class="contact-icon">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div class="contact-text">
+                                <h4>Business Hours</h4>
+                                <p>Monday - Friday: 9:00 AM - 6:00 PM IST</p>
+                                <p>Saturday: 10:00 AM - 4:00 PM IST</p>
+                                <p>Sunday: Closed</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="social-connect">
+                        <h4>Connect With Us</h4>
+                        <div class="social-icons">
+                            <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+                            <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+                            <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+                            <a href="#" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
+                            <a href="#" class="social-icon"><i class="fab fa-youtube"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-6">
+                <div class="contact-form-wrapper">
+                    <h2>Send Us a Message</h2>
+                    <p>Fill out the form below, and our team will get back to you within 24 hours.</p>
+                    
+                    <form method="POST" class="contact-form">
+                        {{ form.hidden_tag() }}
+                        
+                        <div class="form-group mb-3">
+                            <label for="name">{{ form.name.label }}</label>
+                            {{ form.name(class="form-control" + (" is-invalid" if form.name.errors else ""), placeholder="Enter your full name") }}
+                            {% for error in form.name.errors %}
+                                <div class="invalid-feedback">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        
+                        <div class="form-group mb-3">
+                            <label for="email">{{ form.email.label }}</label>
+                            {{ form.email(class="form-control" + (" is-invalid" if form.email.errors else ""), placeholder="Enter your email address") }}
+                            {% for error in form.email.errors %}
+                                <div class="invalid-feedback">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        
+                        <div class="form-group mb-3">
+                            <label for="phone">{{ form.phone.label }}</label>
+                            {{ form.phone(class="form-control" + (" is-invalid" if form.phone.errors else ""), placeholder="Enter your phone number (optional)") }}
+                            {% for error in form.phone.errors %}
+                                <div class="invalid-feedback">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        
+                        <div class="form-group mb-3">
+                            <label for="interest">{{ form.interest.label }}</label>
+                            {{ form.interest(class="form-control" + (" is-invalid" if form.interest.errors else "")) }}
+                            {% for error in form.interest.errors %}
+                                <div class="invalid-feedback">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        
+                        <div class="form-group mb-3">
+                            <label for="message">{{ form.message.label }}</label>
+                            {{ form.message(class="form-control" + (" is-invalid" if form.message.errors else ""), rows="5", placeholder="Tell us more about your travel preferences, questions, or special requirements") }}
+                            {% for error in form.message.errors %}
+                                <div class="invalid-feedback">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        
+                        <div class="form-group mt-4">
+                            {{ form.submit(class="btn btn-primary btn-lg w-100") }}
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Map Section -->
+<section class="map-section">
+    <div class="container-fluid p-0">
+        <div class="map-container">
+            <div id="contact-map" style="height: 450px;"></div>
+        </div>
+    </div>
+</section>
+
+<!-- FAQs Section -->
+<section class="faq-section section-padding bg-light">
+    <div class="container">
+        <div class="section-title text-center mb-5">
+            <h2>Frequently Asked Questions</h2>
+            <p>Find quick answers to common questions about our services</p>
+        </div>
+        
+        <div class="row">
+            <div class="col-lg-8 offset-lg-2">
+                <div class="accordion" id="contactFAQ">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingOne">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                How far in advance should I book my journey?
+                            </button>
+                        </h2>
+                        <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#contactFAQ">
+                            <div class="accordion-body">
+                                For peak travel seasons (October-March), we recommend booking 3-6 months in advance to ensure availability of our preferred accommodations and experiences. For off-peak seasons, 1-3 months advance booking is usually sufficient. For special events or festivals, earlier booking is advisable.
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingTwo">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                Can you customize one of your existing packages?
+                            </button>
+                        </h2>
+                        <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#contactFAQ">
+                            <div class="accordion-body">
+                                Absolutely! All our packages can be customized to suit your preferences, interests, and schedule. We can add or remove activities, adjust the pace, upgrade accommodations, or blend elements from different packages to create your perfect journey.
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingThree">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                                What is your cancellation policy?
+                            </button>
+                        </h2>
+                        <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#contactFAQ">
+                            <div class="accordion-body">
+                                Our standard cancellation policy provides a full refund for cancellations made 45 days or more before your journey starts. Cancellations 30-44 days before receive a 75% refund, 15-29 days receive a 50% refund, and less than 15 days receive no refund. We also offer flexible booking options and travel insurance recommendations.
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingFour">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                                Do you offer group discounts?
+                            </button>
+                        </h2>
+                        <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour" data-bs-parent="#contactFAQ">
+                            <div class="accordion-body">
+                                Yes, we offer special rates for groups of 6 or more travelers booking together. The exact discount depends on the package, season, and group size. Contact us with your group details for a customized quote.
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingFive">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
+                                What support do you provide during our journey?
+                            </button>
+                        </h2>
+                        <div id="collapseFive" class="accordion-collapse collapse" aria-labelledby="headingFive" data-bs-parent="#contactFAQ">
+                            <div class="accordion-body">
+                                All our journeys include 24/7 on-ground support from our local team. You'll receive a welcome packet with emergency contacts, detailed itinerary, cultural tips, and other essential information. Depending on your package, you'll have a dedicated guide, driver, or tour manager accompanying you throughout your journey.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block additional_js %}
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Create map centered on Delhi
+    var map = L.map('contact-map').setView([22.3002576, 73.1223832], 15);
+    
+    // Add OpenStreetMap tile layer
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+    
+    // Add marker for office location
+    var marker = L.marker([22.3002576, 73.1223832]).addTo(map);
+    
+    // Add popup with office details
+    marker.bindPopup("<strong>Crafted Journeys</strong><br>G10 Broadway Ventures, Sevasi TP-2<br>Vadodara 391410, India<br><br><a href='https://maps.google.com?q=28.5456,77.1796' target='_blank'>Get Directions</a>").openPopup();
+});
+</script>
+{% endblock %}

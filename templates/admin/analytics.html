@@ -1,0 +1,332 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Analytics - Admin Dashboard{% endblock %}
+
+{% block content %}
+<div class="admin-header">
+    <div>
+        <h1 class="admin-title">Analytics Overview</h1>
+        <p class="admin-subtitle">Track performance metrics and business insights</p>
+    </div>
+</div>
+
+<!-- Time Period Filter -->
+<div class="admin-card mb-4">
+    <div class="card-body">
+        <h5 class="mb-3">Time Period:</h5>
+        <div class="time-filters">
+            <button class="btn btn-primary time-period-btn active" data-period="last-30">Last 30 Days</button>
+            <button class="btn btn-outline-primary time-period-btn" data-period="last-quarter">Last Quarter</button>
+            <button class="btn btn-outline-primary time-period-btn" data-period="year-to-date">Year to Date</button>
+            <button class="btn btn-outline-primary time-period-btn" data-period="all-time">All Time</button>
+        </div>
+    </div>
+</div>
+
+<!-- Overview Metrics -->
+<div class="row">
+    <!-- Inquiry Status -->
+    <div class="col-lg-6 mb-4">
+        <div class="analytics-kpi-card">
+            <div class="d-flex justify-content-between mb-3">
+                <h5 class="analytics-kpi-title">Inquiry Status</h5>
+                <div class="dropdown">
+                    <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="inquiryStatusDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-download"></i> Export
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="inquiryStatusDropdown">
+                        <li><a class="dropdown-item" href="#">CSV</a></li>
+                        <li><a class="dropdown-item" href="#">PDF</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="chart-container">
+                <canvas id="inquiryStatusChart" data-pending="{{ pending_count }}" data-contacted="{{ contacted_count }}" data-resolved="{{ resolved_count }}"></canvas>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Packages by Category -->
+    <div class="col-lg-6 mb-4">
+        <div class="analytics-kpi-card">
+            <div class="d-flex justify-content-between mb-3">
+                <h5 class="analytics-kpi-title">Packages by Category</h5>
+                <div class="dropdown">
+                    <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="packageCategoryDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-download"></i> Export
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="packageCategoryDropdown">
+                        <li><a class="dropdown-item" href="#">CSV</a></li>
+                        <li><a class="dropdown-item" href="#">PDF</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="chart-container">
+                <canvas id="packagesCategoryChart" data-categories="{{ category_counts|tojson }}"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Most Popular Packages -->
+<div class="analytics-kpi-card mb-4">
+    <div class="d-flex justify-content-between mb-3">
+        <h5 class="analytics-kpi-title">Most Popular Packages</h5>
+        <div class="dropdown">
+            <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="popularPackagesDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="fas fa-download"></i> Export
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="popularPackagesDropdown">
+                <li><a class="dropdown-item" href="#">CSV</a></li>
+                <li><a class="dropdown-item" href="#">PDF</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-hover package-popular-table">
+            <thead>
+                <tr>
+                    <th>Package</th>
+                    <th>Category</th>
+                    <th>Inquiries</th>
+                    <th>Conversion</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for package in popular_packages %}
+                <tr>
+                    <td>{{ package.name }}</td>
+                    <td>
+                        <span class="badge rounded-pill {% if package.category == 'Spiritual' %}bg-purple{% elif package.category == 'Cultural' %}bg-blue{% elif package.category == 'Adventure' %}bg-orange{% elif package.category == 'Wellness' %}bg-green{% elif package.category == 'Heritage' %}bg-yellow{% endif %}">
+                            {{ package.category }}
+                        </span>
+                    </td>
+                    <td>24</td>
+                    <td><div class="conversion-indicator">65%</div></td>
+                </tr>
+                <tr>
+                    <td>Royal Rajasthan Explorer</td>
+                    <td><span class="badge rounded-pill bg-blue">Cultural</span></td>
+                    <td>19</td>
+                    <td><div class="conversion-indicator">58%</div></td>
+                </tr>
+                <tr>
+                    <td>Himalayan Yoga Retreat</td>
+                    <td><span class="badge rounded-pill bg-green">Wellness</span></td>
+                    <td>15</td>
+                    <td><div class="conversion-indicator">52%</div></td>
+                </tr>
+                <tr>
+                    <td>Kerala Backwaters Serenity</td>
+                    <td><span class="badge rounded-pill bg-blue">Cultural</span></td>
+                    <td>12</td>
+                    <td><div class="conversion-indicator">47%</div></td>
+                </tr>
+                <tr>
+                    <td>Ancient Hampi Expedition</td>
+                    <td><span class="badge rounded-pill bg-yellow">Heritage</span></td>
+                    <td>9</td>
+                    <td><div class="conversion-indicator">40%</div></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Second Row Charts -->
+<div class="row">
+    <!-- Inquiry Sources -->
+    <div class="col-lg-6 mb-4">
+        <div class="analytics-kpi-card">
+            <div class="d-flex justify-content-between mb-3">
+                <h5 class="analytics-kpi-title">Inquiry Sources</h5>
+                <div class="dropdown">
+                    <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="inquirySourcesDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-download"></i> Export
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="inquirySourcesDropdown">
+                        <li><a class="dropdown-item" href="#">CSV</a></li>
+                        <li><a class="dropdown-item" href="#">PDF</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="chart-container">
+                <canvas id="inquirySourcesChart" data-sources="{{ inquiry_sources|tojson }}"></canvas>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Monthly Bookings Trend -->
+    <div class="col-lg-6 mb-4">
+        <div class="analytics-kpi-card">
+            <div class="d-flex justify-content-between mb-3">
+                <h5 class="analytics-kpi-title">Monthly Booking Trends</h5>
+                <div class="dropdown">
+                    <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="monthlyTrendsDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-download"></i> Export
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="monthlyTrendsDropdown">
+                        <li><a class="dropdown-item" href="#">CSV</a></li>
+                        <li><a class="dropdown-item" href="#">PDF</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="chart-container">
+                <canvas id="monthlyBookingsChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Additional Analytics -->
+<div class="row">
+    <!-- Revenue by Region -->
+    <div class="col-lg-6 mb-4">
+        <div class="analytics-kpi-card">
+            <div class="d-flex justify-content-between mb-3">
+                <h5 class="analytics-kpi-title">Revenue by Region</h5>
+                <div class="dropdown">
+                    <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="revenueRegionDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-download"></i> Export
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="revenueRegionDropdown">
+                        <li><a class="dropdown-item" href="#">CSV</a></li>
+                        <li><a class="dropdown-item" href="#">PDF</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="chart-container">
+                <canvas id="revenueRegionChart"></canvas>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Customer Satisfaction -->
+    <div class="col-lg-6 mb-4">
+        <div class="analytics-kpi-card">
+            <div class="d-flex justify-content-between mb-3">
+                <h5 class="analytics-kpi-title">Customer Satisfaction</h5>
+                <div class="dropdown">
+                    <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="satisfactionDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-download"></i> Export
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="satisfactionDropdown">
+                        <li><a class="dropdown-item" href="#">CSV</a></li>
+                        <li><a class="dropdown-item" href="#">PDF</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="chart-container">
+                <canvas id="satisfactionChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Activities -->
+<div class="admin-card mb-4">
+    <div class="card-body">
+        <div class="d-flex justify-content-between mb-3">
+            <h5>Recent Activities</h5>
+            <a href="#" class="btn btn-sm btn-outline-primary">View All</a>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Activity</th>
+                        <th>User</th>
+                        <th>Details</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>12 Mar 2023</td>
+                        <td>Package Added</td>
+                        <td>admin</td>
+                        <td>"Temple Tour of Tamil Nadu" package added</td>
+                    </tr>
+                    <tr>
+                        <td>12 Mar 2023</td>
+                        <td>Package Updated</td>
+                        <td>admin</td>
+                        <td>"Royal Rajasthan Explorer" package updated</td>
+                    </tr>
+                    <tr>
+                        <td>11 Mar 2023</td>
+                        <td>New Inquiries</td>
+                        <td>system</td>
+                        <td>5 new customer inquiries received</td>
+                    </tr>
+                    <tr>
+                        <td>10 Mar 2023</td>
+                        <td>System Alert</td>
+                        <td>system</td>
+                        <td>Reminder: Update seasonal pricing for all packages</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Analytics Insights -->
+<div class="admin-card">
+    <div class="card-body">
+        <h5 class="mb-3"><i class="fas fa-lightbulb me-2 text-warning"></i> Key Insights</h5>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="insight-card">
+                    <h6>Most Popular Category</h6>
+                    <p>Cultural packages are generating the most inquiries, with a 58% conversion rate. Consider expanding offerings in this category.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="insight-card">
+                    <h6>Conversion Opportunity</h6>
+                    <p>Spiritual journeys have a high interest level but lower conversion rate. Review pricing and offering details to improve conversion.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="insight-card">
+                    <h6>Regional Growth</h6>
+                    <p>South India packages are showing 23% growth compared to last quarter. Consider expanding destination options in Kerala and Tamil Nadu.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block additional_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Time period buttons
+        const timePeriodButtons = document.querySelectorAll('.time-period-btn');
+        
+        if (timePeriodButtons.length > 0) {
+            timePeriodButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // Remove active class from all buttons
+                    timePeriodButtons.forEach(btn => {
+                        btn.classList.remove('active');
+                        btn.classList.remove('btn-primary');
+                        btn.classList.add('btn-outline-primary');
+                    });
+                    
+                    // Add active class to clicked button
+                    this.classList.add('active');
+                    this.classList.remove('btn-outline-primary');
+                    this.classList.add('btn-primary');
+                    
+                    // Here you would typically update the data based on the selected time period
+                    // For this demo, we'll just log the selected period
+                    console.log(`Selected time period: ${this.dataset.period}`);
+                });
+            });
+        }
+    });
+</script>
+{% endblock %}

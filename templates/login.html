@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block title %}Login - Crafted Journeys{% endblock %}
+
+{% block content %}
+<section class="auth-section">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8 col-lg-6">
+                <div class="auth-card">
+                    <div class="text-center mb-4">
+                        <img src="{{ url_for('static', filename='assets/adminlogo1.svg') }}" alt="Crafted Journeys" class="auth-logo">
+                    </div>
+                    
+                    <h1 class="auth-title text-center">Welcome Back</h1>
+                    <p class="auth-subtitle text-center">Login to your account to access your journeys</p>
+                    
+                    <form method="POST" class="auth-form">
+                        {{ form.hidden_tag() }}
+                        
+                        <div class="form-group mb-3">
+                            <label for="email">Email Address</label>
+                            {{ form.email(class="form-control" + (" is-invalid" if form.email.errors else ""), placeholder="Enter your email address") }}
+                            {% for error in form.email.errors %}
+                                <div class="invalid-feedback">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        
+                        <div class="form-group mb-3">
+                            <label for="password">Password</label>
+                            {{ form.password(class="form-control" + (" is-invalid" if form.password.errors else ""), placeholder="Enter your password") }}
+                            {% for error in form.password.errors %}
+                                <div class="invalid-feedback">{{ error }}</div>
+                            {% endfor %}
+                            <div class="text-end mt-2">
+                                <a href="#" class="forgot-password">Forgot Password?</a>
+                            </div>
+                        </div>
+                        
+                        <div class="form-check mb-4">
+                            {{ form.remember(class="form-check-input") }}
+                            <label class="form-check-label" for="remember">
+                                Remember Me
+                            </label>
+                        </div>
+                        
+                        <div class="form-group">
+                            {{ form.submit(class="btn btn-primary btn-lg w-100") }}
+                        </div>
+                    </form>
+                    
+                    <div class="auth-footer text-center mt-4">
+                        <p>Don't have an account? <a href="{{ url_for('auth.signup') }}">Sign Up</a></p>
+                    </div>
+                    
+                    <div class="auth-separator">
+                        <span>Or login with</span>
+                    </div>
+                    
+                    <div class="social-auth">
+                        <a href="#" class="btn btn-outline-secondary btn-social">
+                            <i class="fab fa-google"></i> Login with Google
+                        </a>
+                        <a href="#" class="btn btn-outline-secondary btn-social">
+                            <i class="fab fa-facebook-f"></i> Login with Facebook
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

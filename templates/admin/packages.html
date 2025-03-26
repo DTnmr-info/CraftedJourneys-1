@@ -1,0 +1,133 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Manage Packages - Admin{% endblock %}
+
+{% block content %}
+<div class="admin-header">
+    <div>
+        <h1 class="admin-title">Manage Packages</h1>
+        <p class="admin-subtitle">Create, edit, and manage travel packages</p>
+    </div>
+    <div>
+        <a href="{{ url_for('admin.add_package') }}" class="btn btn-primary">
+            <i class="fas fa-plus me-2"></i> Add New Package
+        </a>
+    </div>
+</div>
+
+<!-- Packages Table -->
+<div class="admin-card">
+    <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div class="search-container">
+                <input type="text" id="package-search" class="form-control" placeholder="Search packages...">
+            </div>
+            <div class="filter-container">
+                <form method="GET" class="d-flex gap-2">
+                    <select name="category" class="form-select table-filter">
+                        <option value="">All Categories</option>
+                        <option value="Spiritual">Spiritual</option>
+                        <option value="Cultural">Cultural</option>
+                        <option value="Adventure">Adventure</option>
+                        <option value="Wellness">Wellness</option>
+                        <option value="Heritage">Heritage</option>
+                    </select>
+                    
+                    <select name="region" class="form-select table-filter">
+                        <option value="">All Regions</option>
+                        <option value="North India">North India</option>
+                        <option value="South India">South India</option>
+                        <option value="East India">East India</option>
+                        <option value="West India">West India</option>
+                        <option value="Central India">Central India</option>
+                        <option value="Northeast India">Northeast India</option>
+                    </select>
+                </form>
+            </div>
+        </div>
+        
+        {% if packages %}
+            <div class="table-responsive">
+                <table class="table table-hover admin-table">
+                    <thead>
+                        <tr>
+                            <th scope="col">ID</th>
+                            <th scope="col">Name</th>
+                            <th scope="col">Location</th>
+                            <th scope="col">Category</th>
+                            <th scope="col">Price (₹)</th>
+                            <th scope="col">Duration</th>
+                            <th scope="col">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for package in packages %}
+                            <tr class="package-item">
+                                <td>{{ package.id }}</td>
+                                <td class="package-name">{{ package.name }}</td>
+                                <td>{{ package.location.name }}</td>
+                                <td>
+                                    <span class="badge rounded-pill {% if package.category == 'Spiritual' %}bg-purple{% elif package.category == 'Cultural' %}bg-blue{% elif package.category == 'Adventure' %}bg-orange{% elif package.category == 'Wellness' %}bg-green{% elif package.category == 'Heritage' %}bg-yellow{% endif %}">
+                                        {{ package.category }}
+                                    </span>
+                                </td>
+                                <td>{{ package.price|int }}</td>
+                                <td>{{ package.duration }}</td>
+                                <td>
+                                    <div class="btn-group">
+                                        <a href="{{ url_for('main.package_detail', package_id=package.id) }}" class="btn btn-sm btn-outline-primary" title="View" target="_blank">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                        <a href="{{ url_for('admin.edit_package', package_id=package.id) }}" class="btn btn-sm btn-outline-secondary" title="Edit">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <form action="{{ url_for('admin.delete_package', package_id=package.id) }}" method="POST" class="d-inline">
+                                            <button type="submit" class="btn btn-sm btn-outline-danger delete-btn" title="Delete">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="text-center py-5">
+                <i class="fas fa-suitcase fa-3x mb-3 text-muted"></i>
+                <h3>No Packages Found</h3>
+                <p>There are no packages available matching your criteria.</p>
+                <a href="{{ url_for('admin.add_package') }}" class="btn btn-primary mt-3">Add Your First Package</a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Help Section -->
+<div class="admin-card mt-4">
+    <div class="card-body">
+        <h4 class="mb-3"><i class="fas fa-info-circle me-2"></i> Managing Packages</h4>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="help-item">
+                    <h5>Adding Packages</h5>
+                    <p>Create new travel experiences by clicking the "Add New Package" button. Provide essential details like name, description, price, location, and category.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="help-item">
+                    <h5>Editing Packages</h5>
+                    <p>Update existing packages by clicking the edit icon. You can modify all details, including changing the associated location.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="help-item">
+                    <h5>Deleting Packages</h5>
+                    <p>Remove packages by clicking the delete icon. Note that this action cannot be undone. Consider deactivating packages instead of deleting them.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

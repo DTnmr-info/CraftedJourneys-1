@@ -1,0 +1,248 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Manage Images - Admin{% endblock %}
+
+{% block content %}
+<div class="admin-header">
+    <div>
+        <h1 class="admin-title">Manage Images</h1>
+        <p class="admin-subtitle">Upload and organize images for your website</p>
+    </div>
+    <div>
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#uploadImageModal">
+            <i class="fas fa-plus me-2"></i> Upload New Image
+        </button>
+    </div>
+</div>
+
+<!-- Filter Tabs -->
+<div class="admin-card mb-4">
+    <div class="card-body">
+        <div class="filter-tabs">
+            <ul class="nav nav-pills">
+                <li class="nav-item">
+                    <a class="nav-link {% if category_filter == 'all' %}active{% endif %}" href="{{ url_for('admin.images') }}">
+                        All Images
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if category_filter == 'Location Image' %}active{% endif %}" href="{{ url_for('admin.images', category='Location Image') }}">
+                        Location Images
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if category_filter == 'Package Image' %}active{% endif %}" href="{{ url_for('admin.images', category='Package Image') }}">
+                        Package Images
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if category_filter == 'Banner Image' %}active{% endif %}" href="{{ url_for('admin.images', category='Banner Image') }}">
+                        Banner Images
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if category_filter == 'Other' %}active{% endif %}" href="{{ url_for('admin.images', category='Other') }}">
+                        Other Images
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- Images Grid -->
+<div class="admin-card">
+    <div class="card-body">
+        {% if images %}
+            <div class="row">
+                {% for image in images %}
+                    <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                        <div class="image-card">
+                            <div class="image-preview">
+                                <img src="{{ image.filename }}" alt="{{ image.description or 'Image' }}">
+                            </div>
+                            <div class="image-info">
+                                <h5 title="{{ image.filename }}">{{ image.filename.split('/')[-1]|truncate(20) }}</h5>
+                                <div class="image-meta">
+                                    <span><strong>Category:</strong> {{ image.category }}</span>
+                                    <span><strong>Uploaded:</strong> {{ image.uploaded_at.strftime('%d %b %Y') }}</span>
+                                    <span><strong>Description:</strong> {{ image.description or 'N/A' }}</span>
+                                </div>
+                                <div class="image-actions d-flex gap-2 mt-2">
+                                    <button class="btn btn-sm btn-outline-primary copy-url-btn" data-url="{{ image.filename }}" title="Copy URL">
+                                        <i class="fas fa-copy"></i>
+                                    </button>
+                                    <form action="{{ url_for('admin.delete_image', image_id=image.id) }}" method="POST" class="d-inline">
+                                        <button type="submit" class="btn btn-sm btn-outline-danger delete-btn" title="Delete Image">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="text-center py-5">
+                <i class="fas fa-images fa-3x mb-3 text-muted"></i>
+                <h3>No Images Found</h3>
+                <p>There are no images available matching your filter criteria.</p>
+                <button type="button" class="btn btn-primary mt-3" data-bs-toggle="modal" data-bs-target="#uploadImageModal">
+                    Upload Your First Image
+                </button>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Upload Image Modal -->
+<div class="modal fade" id="uploadImageModal" tabindex="-1" aria-labelledby="uploadImageModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="uploadImageModalLabel">Upload New Image</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="POST" action="{{ url_for('admin.upload_image') }}" enctype="multipart/form-data">
+                {{ form.hidden_tag() }}
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="image" class="form-label">Select Image</label>
+                        {{ form.image(class="form-control" + (" is-invalid" if form.image.errors else "")) }}
+                        {% for error in form.image.errors %}
+                            <div class="invalid-feedback">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="category" class="form-label">Image Category</label>
+                        {{ form.category(class="form-control" + (" is-invalid" if form.category.errors else "")) }}
+                        {% for error in form.category.errors %}
+                            <div class="invalid-feedback">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Image Usage/Description</label>
+                        {{ form.description(class="form-control" + (" is-invalid" if form.description.errors else ""), placeholder="e.g., Home Banner, About Page") }}
+                        {% for error in form.description.errors %}
+                            <div class="invalid-feedback">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                    
+                    <div class="image-preview mt-3"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    {{ form.submit(class="btn btn-primary") }}
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Help Section -->
+<div class="admin-card mt-4">
+    <div class="card-body">
+        <h4 class="mb-3"><i class="fas fa-info-circle me-2"></i> Image Management Guide</h4>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="help-item">
+                    <h5>Recommended Image Sizes</h5>
+                    <ul>
+                        <li><strong>Banner Images:</strong> 1920px × 800px</li>
+                        <li><strong>Package/Location Images:</strong> 800px × 600px</li>
+                        <li><strong>Gallery Images:</strong> 1200px × 800px</li>
+                        <li><strong>Thumbnails:</strong> 400px × 300px</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="help-item">
+                    <h5>Image Categories</h5>
+                    <ul>
+                        <li><strong>Location Image:</strong> Images of destinations</li>
+                        <li><strong>Package Image:</strong> Images for travel packages</li>
+                        <li><strong>Banner Image:</strong> Hero/banner images for pages</li>
+                        <li><strong>Other:</strong> Testimonials, team photos, etc.</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="help-item">
+                    <h5>Best Practices</h5>
+                    <ul>
+                        <li>Use high-quality, professionally shot images</li>
+                        <li>Optimize file sizes for web (typically under 300KB)</li>
+                        <li>Include descriptive names and metadata</li>
+                        <li>Ensure images reflect authentic experiences</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block additional_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Image preview
+        const imageInput = document.querySelector('input[type="file"]');
+        const imagePreview = document.querySelector('.image-preview');
+        
+        if (imageInput) {
+            imageInput.addEventListener('change', function() {
+                if (this.files && this.files[0]) {
+                    const reader = new FileReader();
+                    
+                    reader.onload = function(e) {
+                        imagePreview.innerHTML = `<img src="${e.target.result}" class="img-fluid rounded">`;
+                    };
+                    
+                    reader.readAsDataURL(this.files[0]);
+                }
+            });
+        }
+        
+        // Copy image URL
+        const copyButtons = document.querySelectorAll('.copy-url-btn');
+        
+        if (copyButtons.length > 0) {
+            copyButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const url = this.dataset.url;
+                    
+                    // Create a temporary input element
+                    const tempInput = document.createElement('input');
+                    tempInput.value = url;
+                    document.body.appendChild(tempInput);
+                    
+                    // Select and copy the URL
+                    tempInput.select();
+                    document.execCommand('copy');
+                    
+                    // Remove the temporary input
+                    document.body.removeChild(tempInput);
+                    
+                    // Change button appearance temporarily to indicate success
+                    const originalIcon = this.innerHTML;
+                    this.innerHTML = '<i class="fas fa-check"></i>';
+                    this.classList.remove('btn-outline-primary');
+                    this.classList.add('btn-success');
+                    
+                    // Revert button after 2 seconds
+                    setTimeout(() => {
+                        this.innerHTML = originalIcon;
+                        this.classList.remove('btn-success');
+                        this.classList.add('btn-outline-primary');
+                    }, 2000);
+                });
+            });
+        }
+    });
+</script>
+{% endblock %}

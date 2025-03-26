@@ -1,0 +1,409 @@
+{% extends "base.html" %}
+
+{% block title %}{{ package.name }} - Crafted Journeys{% endblock %}
+
+{% block additional_css %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+{% endblock %}
+
+{% block content %}
+<!-- Package Header -->
+<section class="package-header">
+    {% if package.featured_image %}
+        <img src="{{ package.featured_image }}" alt="{{ package.name }}" class="package-header-image">
+    {% else %}
+        <div class="package-header-image" style="background-color: #f8f9fa; display: flex; align-items: center; justify-content: center;">
+            <i class="fas fa-mountain" style="font-size: 5rem; color: #6c757d;"></i>
+        </div>
+    {% endif %}
+    
+    <div class="package-header-content">
+        <span class="package-header-category">{{ package.category }}</span>
+        <h1>{{ package.name }}</h1>
+        <div class="package-header-meta">
+            <span><i class="fas fa-map-marker-alt"></i> {{ package.location.name }}, {{ package.location.region }}</span>
+            <span><i class="fas fa-clock"></i> {{ package.duration }}</span>
+            <span><i class="fas fa-rupee-sign"></i> {{ package.price|int }}</span>
+        </div>
+    </div>
+</section>
+
+<!-- Package Detail Navigation -->
+<section class="package-detail-nav">
+    <div class="container">
+        <nav class="nav">
+            <a class="nav-link active" href="#overview">Overview</a>
+            <a class="nav-link" href="#itinerary">Itinerary</a>
+            <a class="nav-link" href="#map">Map</a>
+            <a class="nav-link" href="#inclusions">Inclusions</a>
+            <a class="nav-link" href="#gallery">Gallery</a>
+        </nav>
+    </div>
+</section>
+
+<!-- Package Content -->
+<section class="package-content section-padding">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8">
+                <!-- Overview Section -->
+                <div id="overview" class="package-overview">
+                    <h2>Package Overview</h2>
+                    
+                    <div class="overview-box">
+                        <div class="overview-item">
+                            <div class="overview-icon">
+                                <i class="fas fa-calendar-alt"></i>
+                            </div>
+                            <div class="overview-text">
+                                <span class="label">Duration</span>
+                                <span class="value">{{ package.duration }}</span>
+                            </div>
+                        </div>
+                        
+                        <div class="overview-item">
+                            <div class="overview-icon">
+                                <i class="fas fa-map-marker-alt"></i>
+                            </div>
+                            <div class="overview-text">
+                                <span class="label">Location</span>
+                                <span class="value">{{ package.location.name }}</span>
+                            </div>
+                        </div>
+                        
+                        <div class="overview-item">
+                            <div class="overview-icon">
+                                <i class="fas fa-tags"></i>
+                            </div>
+                            <div class="overview-text">
+                                <span class="label">Category</span>
+                                <span class="value">{{ package.category }}</span>
+                            </div>
+                        </div>
+                        
+                        <div class="overview-item">
+                            <div class="overview-icon">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <div class="overview-text">
+                                <span class="label">Group Size</span>
+                                <span class="value">2-12 People</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="package-description">
+                        {{ package.description|safe }}
+                    </div>
+                </div>
+                
+                <!-- Itinerary Section -->
+                <div id="itinerary" class="package-itinerary">
+                    <h2>Itinerary</h2>
+                    
+                    {% if itinerary %}
+                        {% for day in itinerary %}
+                        <div class="itinerary-day">
+                            <div class="day-number">{{ loop.index }}</div>
+                            <div class="day-content">
+                                <h3>{{ day.title }}</h3>
+                                <p>{{ day.description }}</p>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <!-- Default itinerary when not provided -->
+                        <div class="itinerary-day">
+                            <div class="day-number">1</div>
+                            <div class="day-content">
+                                <h3>Arrival & Welcome</h3>
+                                <p>Upon arrival at the airport/railway station, you'll be welcomed by our representative who will transfer you to your hotel. After check-in and some rest, enjoy a welcome dinner with a brief orientation about your upcoming journey.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="itinerary-day">
+                            <div class="day-number">2</div>
+                            <div class="day-content">
+                                <h3>Exploration Day</h3>
+                                <p>After breakfast, embark on a guided tour of the main attractions. Enjoy a traditional lunch at a local restaurant, followed by visits to cultural sites and markets. The evening is yours to relax or explore the surroundings.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="itinerary-day">
+                            <div class="day-number">3</div>
+                            <div class="day-content">
+                                <h3>Cultural Immersion</h3>
+                                <p>Today is dedicated to a deeper cultural experience. Participate in local activities, interact with community members, and learn about traditional crafts. Enjoy an authentic dinner with a local family.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="itinerary-day">
+                            <div class="day-number">4</div>
+                            <div class="day-content">
+                                <h3>Free Day & Farewell</h3>
+                                <p>Spend the morning at your leisure. Optional activities available. In the afternoon, gather for a farewell lunch. Transfer to the airport/railway station for your onward journey with fond memories of your trip.</p>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <!-- Map Section -->
+                <div id="map" class="package-map">
+                    <h2>Location</h2>
+                    <div id="package-map" class="map-container" data-latitude="{{ package.location.latitude }}" data-longitude="{{ package.location.longitude }}" data-location="{{ package.location.name }}"></div>
+                </div>
+                
+                <!-- Inclusions Section -->
+                <div id="inclusions" class="package-inclusions">
+                    <h2>Inclusions & Exclusions</h2>
+                    
+                    <div class="inclusions-grid">
+                        <div class="inclusions-list">
+                            <h3><i class="fas fa-check-circle"></i> What's Included</h3>
+                            <ul>
+                                <li>Accommodation in a comfortable hotel/resort (as per the itinerary)</li>
+                                <li>Daily breakfast and select meals (as mentioned in the itinerary)</li>
+                                <li>Private air-conditioned transportation</li>
+                                <li>English-speaking local guide for sightseeing</li>
+                                <li>Entrance fees to monuments/temples mentioned in the itinerary</li>
+                                <li>Welcome and farewell dinners</li>
+                                <li>All applicable taxes</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="exclusions-list">
+                            <h3><i class="fas fa-times-circle"></i> What's Excluded</h3>
+                            <ul>
+                                <li>Airfare/train tickets to and from the destination</li>
+                                <li>Meals not specified in the itinerary</li>
+                                <li>Personal expenses (laundry, telephone calls, etc.)</li>
+                                <li>Tips and gratuities</li>
+                                <li>Camera fees at monuments (if applicable)</li>
+                                <li>Travel insurance</li>
+                                <li>Any services not mentioned in the inclusions</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Gallery Section -->
+                <div id="gallery" class="package-gallery">
+                    <h2>Gallery</h2>
+                    
+                    <div class="gallery-grid">
+                        {% if gallery_images %}
+                            {% for image in gallery_images %}
+                                <div class="gallery-item {% if loop.first %}large{% endif %}">
+                                    <img src="{{ image.url }}" alt="{{ image.alt or 'Gallery Image ' ~ loop.index }}">
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <!-- Default gallery images when not provided -->
+                            <div class="gallery-item large">
+                                <img src="https://images.unsplash.com/photo-1524492412937-b28074a5d7da?auto=format&fit=crop&w=800&q=80" alt="Gallery Image 1">
+                            </div>
+                            <div class="gallery-item">
+                                <img src="https://images.unsplash.com/photo-1477587458883-47145ed94245?auto=format&fit=crop&w=400&q=80" alt="Gallery Image 2">
+                            </div>
+                            <div class="gallery-item">
+                                <img src="https://images.unsplash.com/photo-1546961329-78bef0414d7c?auto=format&fit=crop&w=400&q=80" alt="Gallery Image 3">
+                            </div>
+                            <div class="gallery-item">
+                                <img src="https://images.unsplash.com/photo-1544161515-4ab6ce6db874?auto=format&fit=crop&w=400&q=80" alt="Gallery Image 4">
+                            </div>
+                            <div class="gallery-item">
+                                <img src="https://images.unsplash.com/photo-1517759544474-6b28a886d22d?auto=format&fit=crop&w=400&q=80" alt="Gallery Image 5">
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <!-- Similar Packages -->
+                <div class="similar-packages">
+                    <h2>Similar Packages</h2>
+                    
+                    <div class="row">
+                        {% if related_packages %}
+                            {% for related_package in related_packages %}
+                            <div class="col-md-4">
+                                <div class="package-card">
+                                    <div class="package-image">
+                                        {% if related_package.featured_image %}
+                                            <img src="{{ related_package.featured_image }}" alt="{{ related_package.name }}">
+                                        {% else %}
+                                            <div class="placeholder-image">
+                                                <i class="fas fa-mountain"></i>
+                                            </div>
+                                        {% endif %}
+                                        <div class="package-category">{{ related_package.category }}</div>
+                                    </div>
+                                    <div class="package-content">
+                                        <h3>{{ related_package.name }}</h3>
+                                        <div class="package-meta">
+                                            <span><i class="fas fa-map-marker-alt"></i> {{ related_package.location.name }}</span>
+                                            <span><i class="fas fa-clock"></i> {{ related_package.duration }}</span>
+                                        </div>
+                                        <p>{{ related_package.description|truncate(100) }}</p>
+                                        <div class="package-footer">
+                                            <div class="package-price">₹{{ related_package.price|int }}</div>
+                                            <a href="{{ url_for('main.package_detail', package_id=related_package.id) }}" class="btn btn-outline-primary">View Details</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        {% else %}
+                            <div class="col-12">
+                                <p class="text-center">No similar packages available at the moment.</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4">
+                <!-- Booking Card -->
+                <div class="package-booking">
+                    <div class="booking-card">
+                        <div class="booking-price">
+                            ₹{{ package.price|int }} <span>per person</span>
+                        </div>
+                        
+                        <form class="booking-form">
+                            <div class="form-group mb-3">
+                                <label for="travel-date">Travel Date</label>
+                                <input type="date" class="form-control" id="travel-date" min="{{ now.strftime('%Y-%m-%d') }}">
+                            </div>
+                            
+                            <div class="form-group mb-3">
+                                <label for="travelers">Number of Travelers</label>
+                                <select class="form-control" id="travelers">
+                                    <option value="1">1 Person</option>
+                                    <option value="2" selected>2 People</option>
+                                    <option value="3">3 People</option>
+                                    <option value="4">4 People</option>
+                                    <option value="5">5 People</option>
+                                    <option value="6+">6+ People</option>
+                                </select>
+                            </div>
+                            
+                            <div class="booking-details">
+                                <h4>Price Details</h4>
+                                
+                                <div class="booking-detail-item">
+                                    <span class="booking-detail-label">Base Price (per person)</span>
+                                    <span class="booking-detail-value">₹{{ package.price|int }}</span>
+                                </div>
+                                
+                                <div class="booking-detail-item">
+                                    <span class="booking-detail-label">Number of Travelers</span>
+                                    <span class="booking-detail-value">2</span>
+                                </div>
+                                
+                                <div class="booking-detail-item">
+                                    <span class="booking-detail-label">Taxes & Fees</span>
+                                    <span class="booking-detail-value">₹{{ (package.price * 0.05)|int }}</span>
+                                </div>
+                                
+                                <div class="booking-total">
+                                    <span>Total</span>
+                                    <span>₹{{ (package.price * 2 * 1.05)|int }}</span>
+                                </div>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-primary btn-lg w-100 mt-3">Book Now</button>
+                        </form>
+                        
+                        <div class="text-center mt-3">
+                            <a href="{{ url_for('main.contact') }}" class="inquiry-link">Have a question? Inquire Now</a>
+                        </div>
+                    </div>
+                    
+                    <div class="booking-card mt-4">
+                        <h4>Why Book With Us</h4>
+                        
+                        <div class="booking-feature">
+                            <i class="fas fa-lock text-primary"></i>
+                            <span>Secure Payments</span>
+                        </div>
+                        
+                        <div class="booking-feature">
+                            <i class="fas fa-handshake text-primary"></i>
+                            <span>No Hidden Costs</span>
+                        </div>
+                        
+                        <div class="booking-feature">
+                            <i class="fas fa-calendar-alt text-primary"></i>
+                            <span>Flexible Cancellation</span>
+                        </div>
+                        
+                        <div class="booking-feature">
+                            <i class="fas fa-headset text-primary"></i>
+                            <span>24/7 Customer Support</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block additional_js %}
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+<script src="{{ url_for('static', filename='js/maps.js') }}"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Smooth scroll for package detail nav
+        document.querySelectorAll('.package-detail-nav a').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Remove active class from all links
+                document.querySelectorAll('.package-detail-nav a').forEach(navLink => {
+                    navLink.classList.remove('active');
+                });
+                
+                // Add active class to clicked link
+                this.classList.add('active');
+                
+                // Scroll to target section
+                const targetId = this.getAttribute('href');
+                const targetSection = document.querySelector(targetId);
+                
+                if (targetSection) {
+                    const offset = 120; // Adjust offset as needed
+                    const targetPosition = targetSection.getBoundingClientRect().top + window.pageYOffset - offset;
+                    
+                    window.scrollTo({
+                        top: targetPosition,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+        
+        // Update booking details when number of travelers changes
+        const travelersSelect = document.getElementById('travelers');
+        const basePrice = parseInt(document.querySelector('.booking-detail-item:nth-child(1) .booking-detail-value').textContent.replace('₹', ''));
+        
+        if (travelersSelect) {
+            travelersSelect.addEventListener('change', function() {
+                const travelers = parseInt(this.value) || 2;
+                
+                // Update travelers count
+                document.querySelector('.booking-detail-item:nth-child(2) .booking-detail-value').textContent = isNaN(travelers) ? '6+' : travelers;
+                
+                // Calculate taxes
+                const taxAmount = basePrice * 0.05;
+                document.querySelector('.booking-detail-item:nth-child(3) .booking-detail-value').textContent = `₹${Math.round(taxAmount)}`;
+                
+                // Calculate total
+                const actualTravelers = isNaN(travelers) ? 6 : travelers;
+                const totalAmount = basePrice * actualTravelers * 1.05;
+                document.querySelector('.booking-total span:last-child').textContent = `₹${Math.round(totalAmount)}`;
+            });
+        }
+    });
+</script>
+{% endblock %}

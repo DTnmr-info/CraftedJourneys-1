@@ -1,0 +1,242 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Manage Inquiries - Admin{% endblock %}
+
+{% block content %}
+<div class="admin-header">
+    <div>
+        <h1 class="admin-title">Manage Inquiries</h1>
+        <p class="admin-subtitle">Review and respond to customer inquiries</p>
+    </div>
+</div>
+
+<!-- Filter by Status -->
+<div class="admin-card mb-4">
+    <div class="card-body">
+        <h5 class="mb-3">Filter by Status:</h5>
+        <div class="filter-tabs">
+            <ul class="nav nav-pills">
+                <li class="nav-item">
+                    <a class="nav-link {% if status_filter == 'all' %}active{% endif %}" href="{{ url_for('admin.inquiries') }}">
+                        All Inquiries
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if status_filter == 'Pending' %}active{% endif %}" href="{{ url_for('admin.inquiries', status='Pending') }}">
+                        Pending <span class="badge rounded-pill bg-warning text-dark">{{ inquiries|selectattr('status', 'equalto', 'Pending')|list|length }}</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if status_filter == 'Contacted' %}active{% endif %}" href="{{ url_for('admin.inquiries', status='Contacted') }}">
+                        Contacted <span class="badge rounded-pill bg-info text-white">{{ inquiries|selectattr('status', 'equalto', 'Contacted')|list|length }}</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if status_filter == 'Resolved' %}active{% endif %}" href="{{ url_for('admin.inquiries', status='Resolved') }}">
+                        Resolved <span class="badge rounded-pill bg-success">{{ inquiries|selectattr('status', 'equalto', 'Resolved')|list|length }}</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- Inquiries Table -->
+<div class="admin-card">
+    <div class="card-body">
+        {% if inquiries %}
+            <div class="table-responsive">
+                <table class="table table-hover admin-table">
+                    <thead>
+                        <tr>
+                            <th scope="col">ID</th>
+                            <th scope="col">Name</th>
+                            <th scope="col">Email</th>
+                            <th scope="col">Interest</th>
+                            <th scope="col">Date</th>
+                            <th scope="col">Status</th>
+                            <th scope="col">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for inquiry in inquiries %}
+                            <tr>
+                                <td>{{ inquiry.id }}</td>
+                                <td>{{ inquiry.name }}</td>
+                                <td>
+                                    <a href="mailto:{{ inquiry.email }}">{{ inquiry.email }}</a>
+                                </td>
+                                <td>{{ inquiry.interest }}</td>
+                                <td>{{ inquiry.created_at.strftime('%d %b %Y') }}</td>
+                                <td>
+                                    {% if inquiry.status == 'Pending' %}
+                                        <span class="status-badge pending">Pending</span>
+                                    {% elif inquiry.status == 'Contacted' %}
+                                        <span class="status-badge contacted">Contacted</span>
+                                    {% elif inquiry.status == 'Resolved' %}
+                                        <span class="status-badge resolved">Resolved</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <div class="dropdown">
+                                        <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="dropdownMenuButton{{ inquiry.id }}" data-bs-toggle="dropdown" aria-expanded="false">
+                                            Action
+                                        </button>
+                                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton{{ inquiry.id }}">
+                                            <li>
+                                                <button type="button" class="dropdown-item view-inquiry" data-bs-toggle="modal" data-bs-target="#viewInquiryModal{{ inquiry.id }}">
+                                                    <i class="fas fa-eye me-2"></i> View Details
+                                                </button>
+                                            </li>
+                                            <li><hr class="dropdown-divider"></li>
+                                            <li>
+                                                <form action="{{ url_for('admin.update_inquiry_status', inquiry_id=inquiry.id, status='Pending') }}" method="POST" class="d-inline">
+                                                    <button type="submit" class="dropdown-item {% if inquiry.status == 'Pending' %}disabled{% endif %}">
+                                                        <i class="fas fa-clock me-2 text-warning"></i> Mark as Pending
+                                                    </button>
+                                                </form>
+                                            </li>
+                                            <li>
+                                                <form action="{{ url_for('admin.update_inquiry_status', inquiry_id=inquiry.id, status='Contacted') }}" method="POST" class="d-inline">
+                                                    <button type="submit" class="dropdown-item {% if inquiry.status == 'Contacted' %}disabled{% endif %}">
+                                                        <i class="fas fa-phone-alt me-2 text-info"></i> Mark as Contacted
+                                                    </button>
+                                                </form>
+                                            </li>
+                                            <li>
+                                                <form action="{{ url_for('admin.update_inquiry_status', inquiry_id=inquiry.id, status='Resolved') }}" method="POST" class="d-inline">
+                                                    <button type="submit" class="dropdown-item {% if inquiry.status == 'Resolved' %}disabled{% endif %}">
+                                                        <i class="fas fa-check-circle me-2 text-success"></i> Mark as Resolved
+                                                    </button>
+                                                </form>
+                                            </li>
+                                            <li><hr class="dropdown-divider"></li>
+                                            <li>
+                                                <a href="mailto:{{ inquiry.email }}" class="dropdown-item">
+                                                    <i class="fas fa-reply me-2"></i> Reply via Email
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </td>
+                            </tr>
+                            
+                            <!-- View Inquiry Modal -->
+                            <div class="modal fade" id="viewInquiryModal{{ inquiry.id }}" tabindex="-1" aria-labelledby="viewInquiryModalLabel{{ inquiry.id }}" aria-hidden="true">
+                                <div class="modal-dialog modal-lg">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="viewInquiryModalLabel{{ inquiry.id }}">Inquiry Details #{{ inquiry.id }}</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="row mb-3">
+                                                <div class="col-md-6">
+                                                    <p><strong>Name:</strong> {{ inquiry.name }}</p>
+                                                    <p><strong>Email:</strong> <a href="mailto:{{ inquiry.email }}">{{ inquiry.email }}</a></p>
+                                                    <p><strong>Phone:</strong> {{ inquiry.phone or 'Not provided' }}</p>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <p><strong>Date:</strong> {{ inquiry.created_at.strftime('%d %b %Y, %H:%M') }}</p>
+                                                    <p><strong>Interest:</strong> {{ inquiry.interest }}</p>
+                                                    <p><strong>Status:</strong> 
+                                                        {% if inquiry.status == 'Pending' %}
+                                                            <span class="status-badge pending">Pending</span>
+                                                        {% elif inquiry.status == 'Contacted' %}
+                                                            <span class="status-badge contacted">Contacted</span>
+                                                        {% elif inquiry.status == 'Resolved' %}
+                                                            <span class="status-badge resolved">Resolved</span>
+                                                        {% endif %}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <div class="row mb-3">
+                                                <div class="col-12">
+                                                    <h6>Message:</h6>
+                                                    <div class="p-3 bg-light rounded">
+                                                        {{ inquiry.message|tojson }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <div class="me-auto">
+                                                <div class="btn-group">
+                                                    <form action="{{ url_for('admin.update_inquiry_status', inquiry_id=inquiry.id, status='Pending') }}" method="POST" class="d-inline">
+                                                        <button type="submit" class="btn btn-outline-warning {% if inquiry.status == 'Pending' %}disabled{% endif %}">
+                                                            <i class="fas fa-clock me-2"></i> Mark as Pending
+                                                        </button>
+                                                    </form>
+                                                    <form action="{{ url_for('admin.update_inquiry_status', inquiry_id=inquiry.id, status='Contacted') }}" method="POST" class="d-inline">
+                                                        <button type="submit" class="btn btn-outline-info {% if inquiry.status == 'Contacted' %}disabled{% endif %}">
+                                                            <i class="fas fa-phone-alt me-2"></i> Mark as Contacted
+                                                        </button>
+                                                    </form>
+                                                    <form action="{{ url_for('admin.update_inquiry_status', inquiry_id=inquiry.id, status='Resolved') }}" method="POST" class="d-inline">
+                                                        <button type="submit" class="btn btn-outline-success {% if inquiry.status == 'Resolved' %}disabled{% endif %}">
+                                                            <i class="fas fa-check-circle me-2"></i> Mark as Resolved
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                            <a href="mailto:{{ inquiry.email }}" class="btn btn-primary">
+                                                <i class="fas fa-reply me-2"></i> Reply via Email
+                                            </a>
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="inquiry-empty">
+                <i class="fas fa-inbox"></i>
+                <h3>No Inquiries Found</h3>
+                <p>There are no inquiries matching your filter criteria.</p>
+                <a href="{{ url_for('admin.inquiries') }}" class="btn btn-primary mt-3">View All Inquiries</a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Response Guidelines -->
+<div class="admin-card mt-4">
+    <div class="card-body">
+        <h4 class="mb-3"><i class="fas fa-info-circle me-2"></i> Inquiry Response Guidelines</h4>
+        <div class="inquiry-guidelines">
+            <div class="guideline-item">
+                <div class="guideline-icon yellow">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <div class="guideline-content">
+                    <h4>Response Time</h4>
+                    <p>Aim to respond to all inquiries within 24 hours. Mark status as "Contacted" when initial response is sent.</p>
+                </div>
+            </div>
+            
+            <div class="guideline-item">
+                <div class="guideline-icon blue">
+                    <i class="fas fa-comments"></i>
+                </div>
+                <div class="guideline-content">
+                    <h4>Communication Style</h4>
+                    <p>Be warm, professional and provide detailed information. Highlight unique aspects of experiences that match customer interests.</p>
+                </div>
+            </div>
+            
+            <div class="guideline-item">
+                <div class="guideline-icon green">
+                    <i class="fas fa-tasks"></i>
+                </div>
+                <div class="guideline-content">
+                    <h4>Follow-up Process</h4>
+                    <p>Follow up within 3 days if no response. Mark as "Resolved" once booking is confirmed or inquiry is complete.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

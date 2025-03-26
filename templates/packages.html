@@ -1,0 +1,243 @@
+{% extends "base.html" %}
+
+{% block title %}Travel Packages - Crafted Journeys{% endblock %}
+
+{% block content %}
+<!-- Packages Hero -->
+<section class="page-hero packages-hero">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 text-center">
+                <h1 class="hero-title">Explore Our Travel Packages</h1>
+                <p class="hero-subtitle">Discover curated experiences that showcase the authentic soul of India</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Filter Section -->
+<section class="filter-section py-4">
+    <div class="container">
+        <div class="filter-container">
+            <form class="filter-form" method="GET">
+                <div class="row">
+                    <div class="col-md-4 mb-3 mb-md-0">
+                        <label for="category">Filter by Category</label>
+                        <select name="category" id="category" class="form-select" onchange="this.form.submit()">
+                            <option value="">All Categories</option>
+                            {% for category in categories %}
+                            <option value="{{ category }}" {% if selected_category == category %}selected{% endif %}>{{ category }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="col-md-4 mb-3 mb-md-0">
+                        <label for="region">Filter by Region</label>
+                        <select name="region" id="region" class="form-select" onchange="this.form.submit()">
+                            <option value="">All Regions</option>
+                            {% for region in regions %}
+                            <option value="{{ region }}" {% if selected_region == region %}selected{% endif %}>{{ region }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="col-md-4 d-flex align-items-end">
+                        <button type="submit" class="btn btn-primary w-100">Apply Filters</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+
+<!-- Packages Grid -->
+<section class="packages-grid section-padding">
+    <div class="container">
+        {% if packages %}
+            <div class="row">
+                {% for package in packages %}
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="package-card">
+                        <div class="package-image">
+                            {% if package.featured_image %}
+                                <img src="{{ package.featured_image }}" alt="{{ package.name }}">
+                            {% else %}
+                                <div class="placeholder-image">
+                                    <i class="fas fa-mountain"></i>
+                                </div>
+                            {% endif %}
+                            <div class="package-category">{{ package.category }}</div>
+                        </div>
+                        <div class="package-content">
+                            <h3>{{ package.name }}</h3>
+                            <div class="package-meta">
+                                <span><i class="fas fa-map-marker-alt"></i> {{ package.location.name }}</span>
+                                <span><i class="fas fa-clock"></i> {{ package.duration }}</span>
+                            </div>
+                            <p>{{ package.description|truncate(100) }}</p>
+                            <div class="package-footer">
+                                <div class="package-price">₹{{ package.price|int }}</div>
+                                <a href="{{ url_for('main.package_detail', package_id=package.id) }}" class="btn btn-outline-primary">View Details</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="no-packages">
+                <div class="text-center">
+                    <i class="fas fa-search fa-3x mb-3"></i>
+                    <h3>No Packages Found</h3>
+                    <p>We couldn't find any packages matching your search criteria.</p>
+                    <a href="{{ url_for('main.packages') }}" class="btn btn-primary mt-3">Clear Filters</a>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</section>
+
+<!-- Category Overview -->
+<section class="category-overview section-padding bg-light">
+    <div class="container">
+        <div class="section-title text-center mb-5">
+            <h2>Discover Our Experience Categories</h2>
+            <p>Find the perfect journey that matches your interests</p>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="category-overview-card">
+                    <div class="category-icon">
+                        <i class="fas fa-om"></i>
+                    </div>
+                    <h3>Spiritual Journeys</h3>
+                    <p>Connect with India's rich spiritual traditions through sacred sites, rituals, and meditation experiences led by knowledgeable guides.</p>
+                    <a href="{{ url_for('main.packages') }}?category=Spiritual" class="btn btn-outline-primary">Explore Spiritual Journeys</a>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4">
+                <div class="category-overview-card">
+                    <div class="category-icon">
+                        <i class="fas fa-landmark"></i>
+                    </div>
+                    <h3>Cultural Experiences</h3>
+                    <p>Immerse yourself in India's diverse cultural tapestry through art, architecture, music, dance, and authentic interactions with local communities.</p>
+                    <a href="{{ url_for('main.packages') }}?category=Cultural" class="btn btn-outline-primary">Explore Cultural Experiences</a>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4">
+                <div class="category-overview-card">
+                    <div class="category-icon">
+                        <i class="fas fa-hiking"></i>
+                    </div>
+                    <h3>Adventure Tours</h3>
+                    <p>Challenge yourself with exciting outdoor activities amidst India's stunning landscapes, from Himalayan treks to desert safaris and jungle expeditions.</p>
+                    <a href="{{ url_for('main.packages') }}?category=Adventure" class="btn btn-outline-primary">Explore Adventure Tours</a>
+                </div>
+            </div>
+            
+            <div class="col-md-6 mb-4">
+                <div class="category-overview-card">
+                    <div class="category-icon">
+                        <i class="fas fa-spa"></i>
+                    </div>
+                    <h3>Wellness Retreats</h3>
+                    <p>Rejuvenate your mind, body, and spirit through authentic Ayurvedic treatments, yoga sessions, meditation, and holistic healing in serene settings.</p>
+                    <a href="{{ url_for('main.packages') }}?category=Wellness" class="btn btn-outline-primary">Explore Wellness Retreats</a>
+                </div>
+            </div>
+            
+            <div class="col-md-6 mb-4">
+                <div class="category-overview-card">
+                    <div class="category-icon">
+                        <i class="fas fa-monument"></i>
+                    </div>
+                    <h3>Heritage Tours</h3>
+                    <p>Step back in time to explore India's architectural marvels, ancient cities, and historical narratives with expert guides who bring history to life.</p>
+                    <a href="{{ url_for('main.packages') }}?category=Heritage" class="btn btn-outline-primary">Explore Heritage Tours</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Travel Tips -->
+<section class="travel-tips section-padding">
+    <div class="container">
+        <div class="section-title text-center mb-5">
+            <h2>Essential Travel Tips</h2>
+            <p>Make the most of your Indian journey with these helpful insights</p>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="tip-card">
+                    <div class="tip-icon">
+                        <i class="fas fa-calendar-alt"></i>
+                    </div>
+                    <h3>Best Time to Visit</h3>
+                    <p>October to March is generally the best time to visit most parts of India, with pleasant weather and minimal rainfall. However, specific regions may have different optimal seasons:</p>
+                    <ul>
+                        <li>Himalayas: April-June, September-November</li>
+                        <li>South India: November-February</li>
+                        <li>Rajasthan: October-March</li>
+                        <li>Northeast: March-June, September-November</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4">
+                <div class="tip-card">
+                    <div class="tip-icon">
+                        <i class="fas fa-passport"></i>
+                    </div>
+                    <h3>Visa Information</h3>
+                    <p>Most visitors to India require a visa. The e-Tourist Visa is available for citizens of many countries and can be applied for online. We recommend applying at least 4-7 days before your trip.</p>
+                    <p>Required documents typically include:</p>
+                    <ul>
+                        <li>Passport valid for at least 6 months</li>
+                        <li>Recent passport-sized photograph</li>
+                        <li>Return/onward ticket information</li>
+                        <li>Proof of sufficient funds for your stay</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4">
+                <div class="tip-card">
+                    <div class="tip-icon">
+                        <i class="fas fa-suitcase"></i>
+                    </div>
+                    <h3>Packing Essentials</h3>
+                    <p>What to pack depends on your itinerary and the season, but these items are generally recommended:</p>
+                    <ul>
+                        <li>Lightweight, modest clothing (covering shoulders and knees for temple visits)</li>
+                        <li>Comfortable walking shoes</li>
+                        <li>Sun protection (hat, sunglasses, sunscreen)</li>
+                        <li>Insect repellent</li>
+                        <li>Basic medications and first-aid supplies</li>
+                        <li>Universal power adapter</li>
+                        <li>Portable water purifier or water purification tablets</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section">
+    <div class="container">
+        <div class="cta-content">
+            <h2>Can't Find What You're Looking For?</h2>
+            <p>Let us create a custom journey tailored to your specific interests</p>
+            <div class="cta-buttons">
+                <a href="{{ url_for('main.contact') }}" class="btn btn-primary btn-lg">Contact Our Experts</a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

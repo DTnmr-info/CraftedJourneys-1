@@ -1,0 +1,263 @@
+{% extends "admin/base.html" %}
+
+{% block title %}{{ title }} - Admin{% endblock %}
+
+{% block content %}
+<div class="admin-header">
+    <div>
+        <h1 class="admin-title">{{ title }}</h1>
+        <p class="admin-subtitle">{% if 'Add' in title %}Create a new travel destination{% else %}Update location details{% endif %}</p>
+    </div>
+    <div>
+        <a href="{{ url_for('admin.locations') }}" class="btn btn-outline-primary">
+            <i class="fas fa-arrow-left me-2"></i> Back to Locations
+        </a>
+    </div>
+</div>
+
+<!-- Location Form -->
+<div class="admin-card">
+    <div class="card-body">
+        <form method="POST" class="admin-form">
+            {{ form.hidden_tag() }}
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group mb-3">
+                        <label for="name">{{ form.name.label }}</label>
+                        {{ form.name(class="form-control" + (" is-invalid" if form.name.errors else ""), placeholder="Enter location name") }}
+                        {% for error in form.name.errors %}
+                            <div class="invalid-feedback">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="form-group mb-3">
+                        <label for="region">{{ form.region.label }}</label>
+                        {{ form.region(class="form-control" + (" is-invalid" if form.region.errors else "")) }}
+                        {% for error in form.region.errors %}
+                            <div class="invalid-feedback">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group mb-3">
+                        <label for="latitude">{{ form.latitude.label }}</label>
+                        {{ form.latitude(class="form-control" + (" is-invalid" if form.latitude.errors else ""), placeholder="e.g., 28.6139") }}
+                        {% for error in form.latitude.errors %}
+                            <div class="invalid-feedback">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="form-group mb-3">
+                        <label for="longitude">{{ form.longitude.label }}</label>
+                        {{ form.longitude(class="form-control" + (" is-invalid" if form.longitude.errors else ""), placeholder="e.g., 77.2090") }}
+                        {% for error in form.longitude.errors %}
+                            <div class="invalid-feedback">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-group mb-3">
+                <label for="featured_image">{{ form.featured_image.label }}</label>
+                {{ form.featured_image(class="form-control" + (" is-invalid" if form.featured_image.errors else ""), placeholder="Enter image URL") }}
+                {% for error in form.featured_image.errors %}
+                    <div class="invalid-feedback">{{ error }}</div>
+                {% endfor %}
+                <div class="form-text">Enter a URL for the featured image or upload an image in the Images section.</div>
+            </div>
+            
+            <div class="form-group mb-3">
+                <label for="description">{{ form.description.label }}</label>
+                {{ form.description(class="form-control" + (" is-invalid" if form.description.errors else ""), rows="8", placeholder="Enter detailed location description") }}
+                {% for error in form.description.errors %}
+                    <div class="invalid-feedback">{{ error }}</div>
+                {% endfor %}
+            </div>
+            
+            <div class="form-group mt-4 d-flex gap-2">
+                {{ form.submit(class="btn btn-primary") }}
+                <a href="{{ url_for('admin.locations') }}" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Map Preview -->
+<div class="admin-card mt-4">
+    <div class="card-body">
+        <h4 class="mb-3"><i class="fas fa-map-marker-alt me-2"></i> Location Map Preview</h4>
+        <div id="location-preview-map" class="admin-map" style="height: 400px;"></div>
+    </div>
+</div>
+
+<!-- Location Form Guide -->
+<div class="admin-card mt-4">
+    <div class="card-body">
+        <h4 class="mb-3"><i class="fas fa-info-circle me-2"></i> Location Form Guide</h4>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="guide-item">
+                    <h5>Location Name</h5>
+                    <p>Enter the name of the city, town, or specific area (e.g., "Jaipur", "Goa Beaches", "Munnar Hills").</p>
+                </div>
+                
+                <div class="guide-item">
+                    <h5>Region</h5>
+                    <p>Select the broader geographical region of India where this location is situated:</p>
+                    <ul>
+                        <li><strong>North India:</strong> Delhi, Rajasthan, Uttar Pradesh, Himachal Pradesh, etc.</li>
+                        <li><strong>South India:</strong> Kerala, Tamil Nadu, Karnataka, Andhra Pradesh, etc.</li>
+                        <li><strong>East India:</strong> West Bengal, Odisha, Bihar, Jharkhand, etc.</li>
+                        <li><strong>West India:</strong> Maharashtra, Gujarat, Goa, etc.</li>
+                        <li><strong>Central India:</strong> Madhya Pradesh, Chhattisgarh, etc.</li>
+                        <li><strong>Northeast India:</strong> Assam, Meghalaya, Arunachal Pradesh, etc.</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="guide-item">
+                    <h5>Coordinates</h5>
+                    <p>Enter the precise latitude and longitude coordinates for this location. You can get these from:</p>
+                    <ul>
+                        <li>Google Maps (right-click on a location)</li>
+                        <li>Websites like <a href="https://www.latlong.net/" target="_blank">latlong.net</a></li>
+                        <li>Use the map below to click and set coordinates</li>
+                    </ul>
+                </div>
+                
+                <div class="guide-item">
+                    <h5>Description</h5>
+                    <p>Provide a detailed, engaging description of the location. Include information about:</p>
+                    <ul>
+                        <li>Historical and cultural significance</li>
+                        <li>Main attractions and points of interest</li>
+                        <li>Unique experiences available</li>
+                        <li>Local cuisine and specialties</li>
+                        <li>Best time to visit</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block additional_css %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+{% endblock %}
+
+{% block additional_js %}
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Preview image when URL is entered
+        const imageUrlInput = document.getElementById('featured_image');
+        
+        if (imageUrlInput) {
+            // Add container for preview if it doesn't exist
+            if (!document.getElementById('image-preview-container')) {
+                const previewContainer = document.createElement('div');
+                previewContainer.id = 'image-preview-container';
+                previewContainer.className = 'mt-2';
+                imageUrlInput.parentNode.appendChild(previewContainer);
+            }
+            
+            const previewContainer = document.getElementById('image-preview-container');
+            
+            // Initialize with current value if it exists
+            if (imageUrlInput.value) {
+                previewContainer.innerHTML = `
+                    <div class="image-preview-wrapper mt-2">
+                        <img src="${imageUrlInput.value}" class="img-thumbnail" style="max-height: 200px;" alt="Image preview">
+                    </div>
+                `;
+            }
+            
+            imageUrlInput.addEventListener('input', function() {
+                if (this.value) {
+                    previewContainer.innerHTML = `
+                        <div class="image-preview-wrapper mt-2">
+                            <img src="${this.value}" class="img-thumbnail" style="max-height: 200px;" alt="Image preview" onerror="this.onerror=null;this.src='https://via.placeholder.com/300x200?text=Invalid+Image+URL';">
+                        </div>
+                    `;
+                } else {
+                    previewContainer.innerHTML = '';
+                }
+            });
+        }
+        
+        // Initialize map with coordinate picker
+        const latitudeInput = document.getElementById('latitude');
+        const longitudeInput = document.getElementById('longitude');
+        
+        if (latitudeInput && longitudeInput) {
+            // Get current values if they exist
+            let latitude = parseFloat(latitudeInput.value) || 20.5937;
+            let longitude = parseFloat(longitudeInput.value) || 78.9629;
+            let zoomLevel = (latitude === 20.5937 && longitude === 78.9629) ? 5 : 12;
+            
+            // Initialize map
+            const map = L.map('location-preview-map').setView([latitude, longitude], zoomLevel);
+            
+            // Add OpenStreetMap tile layer
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(map);
+            
+            // Add marker at current position
+            let marker = L.marker([latitude, longitude], {
+                draggable: true
+            }).addTo(map);
+            
+            // Update inputs when marker is moved
+            marker.on('dragend', function(event) {
+                const position = marker.getLatLng();
+                latitudeInput.value = position.lat.toFixed(6);
+                longitudeInput.value = position.lng.toFixed(6);
+                
+                // Update popup content
+                marker.bindPopup(`<b>Selected Location</b><br>Lat: ${position.lat.toFixed(6)}, Lng: ${position.lng.toFixed(6)}`).openPopup();
+            });
+            
+            // Set marker position when inputs change
+            latitudeInput.addEventListener('change', updateMarker);
+            longitudeInput.addEventListener('change', updateMarker);
+            
+            function updateMarker() {
+                const newLat = parseFloat(latitudeInput.value);
+                const newLng = parseFloat(longitudeInput.value);
+                
+                if (!isNaN(newLat) && !isNaN(newLng)) {
+                    marker.setLatLng([newLat, newLng]);
+                    map.setView([newLat, newLng], 12);
+                    
+                    // Update popup content
+                    marker.bindPopup(`<b>Selected Location</b><br>Lat: ${newLat.toFixed(6)}, Lng: ${newLng.toFixed(6)}`).openPopup();
+                }
+            }
+            
+            // Allow clicking on map to set marker
+            map.on('click', function(e) {
+                marker.setLatLng(e.latlng);
+                latitudeInput.value = e.latlng.lat.toFixed(6);
+                longitudeInput.value = e.latlng.lng.toFixed(6);
+                
+                // Update popup content
+                marker.bindPopup(`<b>Selected Location</b><br>Lat: ${e.latlng.lat.toFixed(6)}, Lng: ${e.latlng.lng.toFixed(6)}`).openPopup();
+            });
+            
+            // Initial popup
+            marker.bindPopup(`<b>Selected Location</b><br>Lat: ${latitude.toFixed(6)}, Lng: ${longitude.toFixed(6)}`).openPopup();
+        }
+    });
+</script>
+{% endblock %}

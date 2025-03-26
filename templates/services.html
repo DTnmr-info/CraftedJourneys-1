@@ -1,0 +1,275 @@
+{% extends "base.html" %}
+
+{% block title %}Our Premium Services - Crafted Journeys{% endblock %}
+
+{% block content %}
+<!-- Services Hero -->
+<section class="page-hero services-hero">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 text-center">
+                <h1 class="hero-title">Our Premium Services</h1>
+                <p class="hero-subtitle">Curated travel experiences tailored to create unforgettable journeys</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Main Services -->
+<section class="services-main section-padding">
+    <div class="container">
+        <div class="row align-items-center mb-5">
+            <div class="col-lg-6">
+                <div class="service-image">
+                    <img src="https://images.unsplash.com/photo-1524492412937-b28074a5d7da?auto=format&fit=crop&w=800&q=80" alt="Expert Local Guides">
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="service-content">
+                    <h2>Expert Local Guides</h2>
+                    <p>Our carefully selected local guides are not just tour leaders but cultural ambassadors who share authentic insights and hidden stories of India. Each guide is professionally trained, deeply knowledgeable about regional history, traditions, and customs, and passionate about creating meaningful connections between travelers and local communities.</p>
+                    <a href="{{ url_for('main.contact') }}" class="btn btn-primary">Inquire Now</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row align-items-center mb-5 flex-row-reverse">
+            <div class="col-lg-6">
+                <div class="service-image">
+                    <img src="https://images.unsplash.com/photo-1504150558240-0b4fd8946624?auto=format&fit=crop&w=800&q=80" alt="Personalized Itineraries">
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="service-content">
+                    <h2>Personalized Itineraries</h2>
+                    <p>We believe that no two travelers are alike, which is why we create bespoke itineraries tailored to your interests, preferences, and pace. Whether you're seeking spiritual enlightenment, cultural immersion, culinary exploration, or thrilling adventures, our travel designers craft journeys that reflect your unique travel style and fulfill your specific desires.</p>
+                    <a href="{{ url_for('main.contact') }}" class="btn btn-primary">Inquire Now</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row align-items-center mb-5">
+            <div class="col-lg-6">
+                <div class="service-image">
+                    <img src="https://images.unsplash.com/photo-1544161515-4ab6ce6db874?auto=format&fit=crop&w=800&q=80" alt="Cultural Immersion">
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="service-content">
+                    <h2>Cultural Immersion</h2>
+                    <p>Go beyond typical sightseeing with authentic cultural experiences that connect you with local communities. Participate in traditional rituals, learn ancient crafts from master artisans, cook alongside local families, attend private performances of regional music and dance, and engage in meaningful exchanges that offer genuine insights into India's diverse cultural tapestry.</p>
+                    <a href="{{ url_for('main.contact') }}" class="btn btn-primary">Inquire Now</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Service Categories -->
+<section class="service-categories section-padding bg-light">
+    <div class="container">
+        <div class="section-title text-center mb-5">
+            <h2>Our Specialized Services</h2>
+            <p>Discover the unique experiences we offer across different categories</p>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="service-category-card">
+                    <div class="service-icon">
+                        <i class="fas fa-om"></i>
+                    </div>
+                    <h3>Spiritual Journeys</h3>
+                    <p>Embark on transformative spiritual experiences at India's sacred sites. Participate in ancient rituals, meditation sessions with respected gurus, and private ceremonies that provide deeper understanding of India's spiritual traditions.</p>
+                    <a href="{{ url_for('main.packages') }}?category=Spiritual" class="btn btn-outline-primary">View Spiritual Packages</a>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4">
+                <div class="service-category-card">
+                    <div class="service-icon">
+                        <i class="fas fa-landmark"></i>
+                    </div>
+                    <h3>Cultural Expeditions</h3>
+                    <p>Discover India's rich cultural heritage through immersive experiences with local communities. Explore historic monuments, attend traditional performances, learn from master artisans, and engage with diverse cultural traditions.</p>
+                    <a href="{{ url_for('main.packages') }}?category=Cultural" class="btn btn-outline-primary">View Cultural Packages</a>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4">
+                <div class="service-category-card">
+                    <div class="service-icon">
+                        <i class="fas fa-hiking"></i>
+                    </div>
+                    <h3>Adventure Tours</h3>
+                    <p>Experience India's diverse landscapes through carefully crafted adventure activities. Trek the Himalayas, safari in national parks, cycle through rural villages, or navigate the rapids of mighty rivers with expert guides ensuring safety and enjoyment.</p>
+                    <a href="{{ url_for('main.packages') }}?category=Adventure" class="btn btn-outline-primary">View Adventure Packages</a>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4">
+                <div class="service-category-card">
+                    <div class="service-icon">
+                        <i class="fas fa-spa"></i>
+                    </div>
+                    <h3>Wellness Retreats</h3>
+                    <p>Rejuvenate your mind, body, and spirit through authentic wellness practices. Experience traditional Ayurvedic treatments, yoga sessions with master practitioners, meditation retreats, and holistic healing in serene natural settings.</p>
+                    <a href="{{ url_for('main.packages') }}?category=Wellness" class="btn btn-outline-primary">View Wellness Packages</a>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4">
+                <div class="service-category-card">
+                    <div class="service-icon">
+                        <i class="fas fa-utensils"></i>
+                    </div>
+                    <h3>Culinary Experiences</h3>
+                    <p>Savor the diverse flavors of Indian cuisine through curated food experiences. Join market tours with local chefs, participate in cooking classes, dine in family homes, and discover regional specialties across India's culinary landscape.</p>
+                    <a href="{{ url_for('main.contact') }}" class="btn btn-outline-primary">Inquire About Food Tours</a>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4">
+                <div class="service-category-card">
+                    <div class="service-icon">
+                        <i class="fas fa-monument"></i>
+                    </div>
+                    <h3>Heritage Walks</h3>
+                    <p>Step back in time with expert-led heritage walks through historic cities and ancient sites. Gain insider access to architectural marvels, hidden gems, and cultural landmarks with knowledgeable guides who bring history to life.</p>
+                    <a href="{{ url_for('main.packages') }}?category=Heritage" class="btn btn-outline-primary">View Heritage Packages</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Additional Services -->
+<section class="additional-services section-padding">
+    <div class="container">
+        <div class="section-title text-center mb-5">
+            <h2>Additional Services</h2>
+            <p>Enhancing your journey with comprehensive support</p>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-6 mb-4">
+                <div class="additional-service-card">
+                    <div class="service-header">
+                        <div class="service-icon">
+                            <i class="fas fa-hotel"></i>
+                        </div>
+                        <h3>Luxury Accommodations</h3>
+                    </div>
+                    <p>We curate exceptional stays that complement your journey, from heritage palaces and boutique hotels to luxury tents and unique homestays. Each property is personally vetted to ensure comfort, character, and authentic experiences.</p>
+                </div>
+            </div>
+            
+            <div class="col-md-6 mb-4">
+                <div class="additional-service-card">
+                    <div class="service-header">
+                        <div class="service-icon">
+                            <i class="fas fa-car"></i>
+                        </div>
+                        <h3>Private Transportation</h3>
+                    </div>
+                    <p>Travel in comfort with our private transportation services, featuring professional drivers, well-maintained vehicles, and flexible schedules. From airport transfers to multi-day journeys, we ensure safe and comfortable travel throughout your trip.</p>
+                </div>
+            </div>
+            
+            <div class="col-md-6 mb-4">
+                <div class="additional-service-card">
+                    <div class="service-header">
+                        <div class="service-icon">
+                            <i class="fas fa-camera"></i>
+                        </div>
+                        <h3>Photography Services</h3>
+                    </div>
+                    <p>Capture your memorable journey with our professional photography services. Our experienced photographers can accompany you on selected experiences or full days, providing high-quality images that beautifully document your Indian adventure.</p>
+                </div>
+            </div>
+            
+            <div class="col-md-6 mb-4">
+                <div class="additional-service-card">
+                    <div class="service-header">
+                        <div class="service-icon">
+                            <i class="fas fa-headset"></i>
+                        </div>
+                        <h3>24/7 Concierge Support</h3>
+                    </div>
+                    <p>Enjoy peace of mind with our dedicated concierge service available throughout your journey. Our local team provides immediate assistance for any needs or unexpected situations, ensuring your travel experience remains smooth and enjoyable.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Service Process -->
+<section class="service-process section-padding bg-light">
+    <div class="container">
+        <div class="section-title text-center mb-5">
+            <h2>Our Service Process</h2>
+            <p>How we create your perfect journey from start to finish</p>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-3 mb-4">
+                <div class="process-card">
+                    <div class="process-number">1</div>
+                    <div class="process-icon">
+                        <i class="fas fa-comments"></i>
+                    </div>
+                    <h3>Consultation</h3>
+                    <p>We begin with a detailed conversation to understand your interests, preferences, travel style, and expectations for your Indian journey.</p>
+                </div>
+            </div>
+            
+            <div class="col-md-3 mb-4">
+                <div class="process-card">
+                    <div class="process-number">2</div>
+                    <div class="process-icon">
+                        <i class="fas fa-pencil-alt"></i>
+                    </div>
+                    <h3>Custom Planning</h3>
+                    <p>Our expert travel designers create a personalized itinerary tailored to your specific interests, pace, and desired experiences.</p>
+                </div>
+            </div>
+            
+            <div class="col-md-3 mb-4">
+                <div class="process-card">
+                    <div class="process-number">3</div>
+                    <div class="process-icon">
+                        <i class="fas fa-tasks"></i>
+                    </div>
+                    <h3>Refinement</h3>
+                    <p>We collaborate with you to refine the itinerary, making adjustments until it perfectly matches your vision for the journey.</p>
+                </div>
+            </div>
+            
+            <div class="col-md-3 mb-4">
+                <div class="process-card">
+                    <div class="process-number">4</div>
+                    <div class="process-icon">
+                        <i class="fas fa-heart"></i>
+                    </div>
+                    <h3>Experience</h3>
+                    <p>Enjoy your seamless journey with our comprehensive support, creating memories that will last a lifetime.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section">
+    <div class="container">
+        <div class="cta-content">
+            <h2>Ready to Plan Your Indian Adventure?</h2>
+            <p>Let us craft a personalized journey that exceeds your expectations</p>
+            <div class="cta-buttons">
+                <a href="{{ url_for('main.packages') }}" class="btn btn-primary btn-lg">Explore Packages</a>
+                <a href="{{ url_for('main.contact') }}" class="btn btn-outline-light btn-lg">Contact Us</a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

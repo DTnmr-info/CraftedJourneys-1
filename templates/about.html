@@ -1,0 +1,326 @@
+{% extends "base.html" %}
+
+{% block title %}About Crafted Journeys{% endblock %}
+
+{% block content %}
+<!-- About Hero -->
+<section class="page-hero about-hero">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 text-center">
+                <h1 class="hero-title">About Crafted Journeys</h1>
+                <p class="hero-subtitle">Passionate travel curators dedicated to sharing the authentic soul of India.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Our Story -->
+<section class="about-story section-padding">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <div class="about-image">
+                    <img src="{{ url_for('static', filename='assets/About.svg') }}" alt="Our Journey">
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="about-content">
+                    <h2>Our Story</h2>
+                    <p>Crafted Journeys began with a passion for sharing the real India with curious travelers who sought more than just traditional tourist experiences. Founded in 2015 by a group of travel enthusiasts with deep roots in various regions of India, we set out to create immersive journeys that showcase the country's incredible diversity, rich heritage, and warm hospitality.</p>
+                    <p>Over the years, we've built a reputation for creating thoughtfully designed, personalized experiences that connect travelers with India's authentic soul. Our team of local experts, each specializing in different regions and aspects of Indian culture, works together to craft journeys that reveal the many layers of this fascinating country.</p>
+                    <p>We believe that travel should be transformative, educational, and responsible. That's why we focus on creating meaningful connections between our guests and local communities, supporting sustainable tourism practices, and preserving India's cultural and natural heritage for future generations to enjoy.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Our Vision and Mission -->
+<section class="vision-mission section-padding bg-light">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="vision-card">
+                    <h2>Our Vision</h2>
+                    <p>To create a world where authentic cultural exchange through travel creates lasting connections, fosters understanding, and preserves the rich diversity of India's heritage.</p>
+                    <ul>
+                        <li>Inspire travelers to explore beyond tourist highlights into the heart of Indian culture</li>
+                        <li>Transform tourism into a positive force for local communities and traditions</li>
+                        <li>Create meaningful experiences that challenge perceptions and build cross-cultural bridges</li>
+                        <li>Lead the way in responsible, sustainable tourism practices across India</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="mission-card">
+                    <h2>Our Mission</h2>
+                    <p>To provide authentic, transformative travel experiences that showcase the true essence of India while supporting local communities and sustaining cultural heritage.</p>
+                    <ul>
+                        <li>Design journeys that reveal the authentic spirit of India through local connections</li>
+                        <li>Curate experiences that balance iconic highlights with hidden treasures</li>
+                        <li>Operate with integrity, respect, and responsibility toward local cultures and environments</li>
+                        <li>Empower local guides, artisans, and providers by integrating them into our experiences</li>
+                        <li>Ensure our travelers gain meaningful insights and lasting memories from their journey</li>
+                        <li>Create lasting positive impacts through responsible and sustainable tourism practices</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Meet Our Team -->
+<section class="team-section section-padding">
+    <div class="container">
+        <div class="section-title text-center mb-5">
+            <h2>Meet Our Team</h2>
+            <p>Our diverse team of experts is passionate about crafting authentic Indian experiences</p>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-3 mb-4">
+                <div class="team-card">
+                    <div class="team-image">
+                        <img src="https://st3.depositphotos.com/13360910/31793/v/450/depositphotos_317933532-stock-illustration-luxury-curved-initial-d-m.jpg" alt="Dhruv Mistry">
+                    </div>
+                    <div class="team-content">
+                        <h3>Dhruv Mistry</h3>
+                        <p class="team-position">Founder & CEO</p>
+                        <p class="team-bio">With over 5 years of experience in the travel industry, Dhruv combines his deep knowledge of India's cultural heritage with a passion for sustainable tourism to lead our team of travel experts.</p>
+                        <div class="team-social">
+                            <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                            <a href="#"><i class="fab fa-twitter"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-3 mb-4">
+                <div class="team-card">
+                    <div class="team-image">
+                        <img src="https://t3.ftcdn.net/jpg/01/84/69/18/360_F_184691847_VevpesHN2Tfr1wl8CDz5TZOdicpXjUv4.jpg" alt="Tirth Tank">
+                    </div>
+                    <div class="team-content">
+                        <h3>Tirth Tank</h3>
+                        <p class="team-position">Head of Operations</p>
+                        <p class="team-bio">Tirth ensures that every journey runs smoothly, with a keen eye for logistics and a commitment to excellence. His background in hospitality management informs his approach to guest experiences.</p>
+                        <div class="team-social">
+                            <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                            <a href="#"><i class="fab fa-twitter"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-3 mb-4">
+                <div class="team-card">
+                    <div class="team-image">
+                        <img src="https://static.vecteezy.com/system/resources/previews/017/302/308/non_2x/mp-letter-linked-logo-for-business-and-company-identity-initial-letter-mp-logo-template-vector.jpg" alt="Mitul Patel">
+                    </div>
+                    <div class="team-content">
+                        <h3>Mitul Patel</h3>
+                        <p class="team-position">Cultural Specialist</p>
+                        <p class="team-bio">With a vast experience in Cultural Anthropology, Mitul brings scholarly depth and authentic insights to our journey designs, specializing in religious traditions and cultural practices across India.</p>
+                        <div class="team-social">
+                            <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                            <a href="#"><i class="fab fa-twitter"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-3 mb-4">
+                <div class="team-card">
+                    <div class="team-image">
+                        <img src="https://st2.depositphotos.com/38197074/44815/v/450/depositphotos_448151616-stock-illustration-initial-letter-vector-logo-icon.jpg" alt="Krunalsnih Parmar">
+                    </div>
+                    <div class="team-content">
+                        <h3>Krunal Parmar</h3>
+                        <p class="team-position">Adventure Guide</p>
+                        <p class="team-bio">A certified mountaineer and wilderness expert, Krunal leads our adventure experiences with safety and environmental stewardship as top priorities.</p>
+                        <div class="team-social">
+                            <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                            <a href="#"><i class="fab fa-twitter"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="text-center mt-4">
+            <p>Our extended team includes local guides, cultural experts, and logistics specialists dedicated to providing exceptional travel experiences.</p>
+        </div>
+    </div>
+</section>
+
+<!-- Our Core Values -->
+<section class="core-values section-padding bg-light">
+    <div class="container">
+        <div class="section-title text-center mb-5">
+            <h2>Our Core Values</h2>
+            <p>The principles that guide everything we do</p>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="value-card">
+                    <div class="value-icon">
+                        <i class="fas fa-heart text-primary"></i>
+                    </div>
+                    <h3>Authenticity</h3>
+                    <p>We're committed to sharing the real India, not a staged version for tourists. From the experiences we curate to the stories we share, authenticity is at the heart of every journey we design.</p>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4">
+                <div class="value-card">
+                    <div class="value-icon">
+                        <i class="fas fa-handshake text-primary"></i>
+                    </div>
+                    <h3>Responsibility</h3>
+                    <p>We operate with deep respect for local communities, cultures, and environments. By partnering with local providers, minimizing environmental impact, and supporting community initiatives, we ensure our tourism creates positive change.</p>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4">
+                <div class="value-card">
+                    <div class="value-icon">
+                        <i class="fas fa-user-alt text-primary"></i>
+                    </div>
+                    <h3>Personalization</h3>
+                    <p>We believe in creating journeys as unique as our travelers. By listening carefully to your interests and adapting to your preferences, we craft experiences that resonate with you personally.</p>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4">
+                <div class="value-card">
+                    <div class="value-icon">
+                        <i class="fas fa-award text-primary"></i>
+                    </div>
+                    <h3>Excellence</h3>
+                    <p>From the initial planning stages to the execution of every detail during your journey, we maintain the highest standards of quality, service, and attention to detail.</p>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4">
+                <div class="value-card">
+                    <div class="value-icon">
+                        <i class="fas fa-leaf text-primary"></i>
+                    </div>
+                    <h3>Sustainability</h3>
+                    <p>We're committed to preserving India's natural and cultural treasures for future generations through responsible tourism practices, community support, and environmental conservation.</p>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4">
+                <div class="value-card">
+                    <div class="value-icon">
+                        <i class="fas fa-hands-helping text-primary"></i>
+                    </div>
+                    <h3>Community</h3>
+                    <p>We believe in the power of travel to strengthen local communities. By creating economic opportunities, preserving cultural heritage, and fostering cross-cultural understanding, we help build stronger communities across India.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Why Choose Us -->
+<section class="why-choose-us section-padding">
+    <div class="container">
+        <div class="section-title text-center mb-5">
+            <h2>Why Choose Crafted Journeys</h2>
+            <p>What sets us apart from other travel providers</p>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-6 mb-4">
+                <div class="choose-card">
+                    <div class="choose-icon">
+                        <i class="fas fa-map-marked-alt text-blue"></i>
+                    </div>
+                    <div class="choose-content">
+                        <h3>Local Expertise</h3>
+                        <p>Our team comprises passionate locals with in-depth knowledge of India's diverse regions, cultures, and hidden gems. This insider perspective ensures authentic experiences that go beyond typical tourist attractions.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6 mb-4">
+                <div class="choose-card">
+                    <div class="choose-icon">
+                        <i class="fas fa-crown text-blue"></i>
+                    </div>
+                    <div class="choose-content">
+                        <h3>Personalized Service</h3>
+                        <p>We take the time to understand your interests, preferences, and travel style to create a journey that reflects your unique perspective. From the planning stages to on-ground support, our service is always personalized.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6 mb-4">
+                <div class="choose-card">
+                    <div class="choose-icon">
+                        <i class="fas fa-hands text-blue"></i>
+                    </div>
+                    <div class="choose-content">
+                        <h3>Authentic Connections</h3>
+                        <p>We facilitate meaningful interactions with local communities, artisans, and experts who share their traditions, skills, and stories. These genuine exchanges often become the most cherished memories of our travelers' journeys.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6 mb-4">
+                <div class="choose-card">
+                    <div class="choose-icon">
+                        <i class="fas fa-recycle text-blue"></i>
+                    </div>
+                    <div class="choose-content">
+                        <h3>Sustainable Practices</h3>
+                        <p>Our commitment to responsible tourism goes beyond words—we partner with eco-conscious accommodations, support local conservation initiatives, minimize waste, and ensure our journeys contribute positively to the destinations we visit.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6 mb-4">
+                <div class="choose-card">
+                    <div class="choose-icon">
+                        <i class="fas fa-door-open text-blue"></i>
+                    </div>
+                    <div class="choose-content">
+                        <h3>Exclusive Access</h3>
+                        <p>Through our extensive network of local connections, we provide access to experiences not available to the general public—private temple ceremonies, artisan workshops, home-cooked meals with local families, and more.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6 mb-4">
+                <div class="choose-card">
+                    <div class="choose-icon">
+                        <i class="fas fa-headset text-blue"></i>
+                    </div>
+                    <div class="choose-content">
+                        <h3>Dedicated Support</h3>
+                        <p>Our dedicated team provides comprehensive support throughout your journey. From 24/7 on-ground assistance to our detailed pre-trip guidance, we ensure your travel experience is seamless, comfortable, and stress-free.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section">
+    <div class="container">
+        <div class="cta-content">
+            <h2>Ready to Start Your Indian Adventure?</h2>
+            <p>Join us in exploring the authentic soul of India</p>
+            <div class="cta-buttons">
+                <a href="{{ url_for('main.packages') }}" class="btn btn-primary btn-lg">Explore Packages</a>
+                <a href="{{ url_for('main.contact') }}" class="btn btn-outline-light btn-lg">Contact Us</a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

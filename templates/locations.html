@@ -1,0 +1,270 @@
+{% extends "base.html" %}
+
+{% block title %}Explore Destinations - Crafted Journeys{% endblock %}
+
+{% block additional_css %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+{% endblock %}
+
+{% block content %}
+<!-- Locations Hero -->
+<section class="page-hero locations-hero">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 text-center">
+                <h1 class="hero-title">Explore India's Enchanting Destinations</h1>
+                <p class="hero-subtitle">Discover the diverse landscapes and cultural treasures across India's regions</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Locations Map -->
+<section class="locations-map-section py-5">
+    <div class="container">
+        <div class="locations-map" id="locations-map" data-locations="{{ locations }}"></div>
+    </div>
+</section>
+
+<!-- Filter Section -->
+<section class="filter-section py-4">
+    <div class="container">
+        <div class="filter-container">
+            <form class="filter-form" method="GET">
+                <div class="row">
+                    <div class="col-md-8 mb-3 mb-md-0">
+                        <label for="region">Filter by Region</label>
+                        <select name="region" id="region" class="form-select" onchange="this.form.submit()">
+                            <option value="">All Regions</option>
+                            {% for region in regions %}
+                            <option value="{{ region }}" {% if selected_region == region %}selected{% endif %}>{{ region }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="col-md-4 d-flex align-items-end">
+                        <button type="submit" class="btn btn-primary w-100">Apply Filter</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+
+<!-- Locations Grid -->
+<section class="locations-grid section-padding">
+    <div class="container">
+        {% if locations %}
+            <div class="row">
+                {% for location in locations %}
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="location-card">
+                        <div class="location-image">
+                            {% if location.featured_image %}
+                                <img src="{{ location.featured_image }}" alt="{{ location.name }}">
+                            {% else %}
+                                <div class="placeholder-image">
+                                    <i class="fas fa-map-marked-alt"></i>
+                                </div>
+                            {% endif %}
+                            <div class="location-region">{{ location.region }}</div>
+                        </div>
+                        <div class="location-content">
+                            <h3>{{ location.name }}</h3>
+                            <div class="location-meta">
+                                <span><i class="fas fa-map-pin"></i> {{ location.region }}</span>
+                                <span><i class="fas fa-suitcase"></i> {{ location.packages|length }} Packages</span>
+                            </div>
+                            <p>{{ location.description|truncate(100) }}</p>
+                            <a href="{{ url_for('main.location_detail', location_id=location.id) }}" class="btn btn-outline-primary">Explore Location</a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="no-locations">
+                <div class="text-center">
+                    <i class="fas fa-search fa-3x mb-3"></i>
+                    <h3>No Locations Found</h3>
+                    <p>We couldn't find any locations matching your search criteria.</p>
+                    <a href="{{ url_for('main.locations') }}" class="btn btn-primary mt-3">Clear Filters</a>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</section>
+
+<!-- Region Overview -->
+<section class="region-overview section-padding bg-light">
+    <div class="container">
+        <div class="section-title text-center mb-5">
+            <h2>Regions of India</h2>
+            <p>Explore the diverse geographical and cultural regions of India</p>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="region-card">
+                    <div class="region-image">
+                        <img src="https://images.unsplash.com/photo-1585506942812-e72b29cef752?auto=format&fit=crop&w=800&q=80" alt="North India">
+                        <div class="region-name">North India</div>
+                    </div>
+                    <div class="region-content">
+                        <p>Home to the majestic Himalayas, sacred cities like Varanasi, the iconic Taj Mahal, and vibrant cultural traditions of Rajasthan and Punjab.</p>
+                        <a href="{{ url_for('main.locations') }}?region=North+India" class="btn btn-outline-primary">Explore North India</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4">
+                <div class="region-card">
+                    <div class="region-image">
+                        <img src="https://images.unsplash.com/photo-1593693397690-362cb9666fc2?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8YWxhcHB1emhhfGVufDB8fDB8fHww" alt="South India">
+                        <div class="region-name">South India</div>
+                    </div>
+                    <div class="region-content">
+                        <p>Experience ancient Dravidian culture, intricate temple architecture, serene backwaters of Kerala, and the lush Western Ghats in this tropical paradise.</p>
+                        <a href="{{ url_for('main.locations') }}?region=South+India" class="btn btn-outline-primary">Explore South India</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4">
+                <div class="region-card">
+                    <div class="region-image">
+                        <img src="https://images.unsplash.com/photo-1570789210967-2cac24afeb00?auto=format&fit=crop&w=800&q=80" alt="East India">
+                        <div class="region-name">East India</div>
+                    </div>
+                    <div class="region-content">
+                        <p>Discover the cultural richness of Bengal, ancient Buddhist sites, the mighty Brahmaputra river, and the diverse tribal heritage of Odisha.</p>
+                        <a href="{{ url_for('main.locations') }}?region=East+India" class="btn btn-outline-primary">Explore East India</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4">
+                <div class="region-card">
+                    <div class="region-image">
+                        <img src="https://www.holidify.com/images/bgImages/UDAIPUR.jpg" alt="West India">
+                        <div class="region-name">West India</div>
+                    </div>
+                    <div class="region-content">
+                        <p>From the bustling metropolis of Mumbai to the pristine beaches of Goa and the colorful traditions of Gujarat, West India offers diverse experiences.</p>
+                        <a href="{{ url_for('main.locations') }}?region=West+India" class="btn btn-outline-primary">Explore West India</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4">
+                <div class="region-card">
+                    <div class="region-image">
+                        <img src="https://static2.tripoto.com/media/filter/tst/img/2953/TripDocument/5615880929_a407ab7957_b.jpg" alt="Northeast India">
+                        <div class="region-name">Northeast India</div>
+                    </div>
+                    <div class="region-content">
+                        <p>The land of seven sisters offers breathtaking landscapes, unique tribal cultures, biodiverse rainforests, and the living root bridges of Meghalaya.</p>
+                        <a href="{{ url_for('main.locations') }}?region=Northeast+India" class="btn btn-outline-primary">Explore Northeast India</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4 mb-4">
+                <div class="region-card">
+                    <div class="region-image">
+                        <img src="https://www.holidify.com/images/bgImages/GWALIOR.jpg" alt="Central India">
+                        <div class="region-name">Central India</div>
+                    </div>
+                    <div class="region-content">
+                        <p>Central India unveils a tapestry of ancient forts, vibrant folk traditions, sprawling national parks teeming with wildlife, and the intricate carvings of Khajuraho's temples.</p>
+                        <a href="{{ url_for('main.locations') }}?region=Central+India" class="btn btn-outline-primary">Explore Central India</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Travel Tips -->
+<section class="travel-tips section-padding">
+    <div class="container">
+        <div class="section-title text-center mb-5">
+            <h2>Essential Travel Tips</h2>
+            <p>Make the most of your journey across India with these helpful insights</p>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="tip-card">
+                    <div class="tip-icon">
+                        <i class="fas fa-calendar-alt"></i>
+                    </div>
+                    <h3>Best Time to Visit</h3>
+                        <p>The ideal time to visit varies by region due to India's diverse climate:</p>
+                        <ul>
+                        <li><strong>North India:</strong> October to March (avoid summer heat and monsoon)</li>
+                        <li><strong>South India:</strong> November to February (cooler, less humid)</li>
+                        <li><strong>Northeast:</strong> March to June, October to November (avoid heavy monsoon)</li>
+                        <li><strong>Himalayan Regions:</strong> April to June, September to November</li>
+                        <li><strong>Central India:</strong> October to March (pleasant weather, avoid extreme heat)</li>
+                        <li><strong>West India:</strong> October to March (comfortable temperatures, especially in coastal areas)</li>
+                        </ul>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4">
+                <div class="tip-card">
+                    <div class="tip-icon">
+                        <i class="fas fa-route"></i>
+                    </div>
+                    <h3>Getting Around</h3>
+                    <p>India offers diverse transportation options:</p>
+                    <ul>
+                        <li><strong>Flights:</strong> Convenient for long distances between major cities</li>
+                        <li><strong>Trains:</strong> Extensive network reaching most towns and cities</li>
+                        <li><strong>Private Cars:</strong> Comfortable option with flexible itineraries</li>
+                        <li><strong>Local Transport:</strong> Auto-rickshaws, taxis, and ride-sharing services for city travel</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4">
+                <div class="tip-card">
+                    <div class="tip-icon">
+                        <i class="fas fa-utensils"></i>
+                    </div>
+                    <h3>Culinary Adventures</h3>
+                        <p>Each region of India offers distinct culinary traditions:</p>
+                        <ul>
+                        <li><strong>North:</strong> Rich curries, tandoori dishes, diverse breads</li>
+                        <li><strong>South:</strong> Rice-based dishes, dosas, coconut and seafood</li>
+                        <li><strong>East:</strong> Fish curries, sweets, mustard flavors</li>
+                        <li><strong>West:</strong> Vegetarian Gujarati thalis, seafood in coastal areas</li>
+                        <li><strong>Central India:</strong> Wheat-based rotis, meat dishes like Bhopali Gosht, Poha, and regional sweets like Jalebi and Peda.</li>
+                        <li><strong>Northeast:</strong> Fermented foods, rice dishes, bamboo shoot preparations, and unique meat and fish curries with local herbs and spices.</li>
+                        </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section">
+    <div class="container">
+        <div class="cta-content">
+            <h2>Ready to Explore India's Incredible Destinations?</h2>
+            <p>Let us help you plan your perfect journey through India's diverse landscapes and cultures</p>
+            <div class="cta-buttons">
+                <a href="{{ url_for('main.packages') }}" class="btn btn-primary btn-lg">Browse Packages</a>
+                <a href="{{ url_for('main.contact') }}" class="btn btn-outline-light btn-lg">Contact Us</a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block additional_js %}
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+<script src="{{ url_for('static', filename='js/maps.js') }}"></script>
+{% endblock %}

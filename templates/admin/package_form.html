@@ -1,0 +1,191 @@
+{% extends "admin/base.html" %}
+
+{% block title %}{{ title }} - Admin{% endblock %}
+
+{% block content %}
+<div class="admin-header">
+    <div>
+        <h1 class="admin-title">{{ title }}</h1>
+        <p class="admin-subtitle">{% if 'Add' in title %}Create a new travel experience{% else %}Update travel package details{% endif %}</p>
+    </div>
+    <div>
+        <a href="{{ url_for('admin.packages') }}" class="btn btn-outline-primary">
+            <i class="fas fa-arrow-left me-2"></i> Back to Packages
+        </a>
+    </div>
+</div>
+
+<!-- Package Form -->
+<div class="admin-card">
+    <div class="card-body">
+        <form method="POST" class="admin-form">
+            {{ form.hidden_tag() }}
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group mb-3">
+                        <label for="name">{{ form.name.label }}</label>
+                        {{ form.name(class="form-control" + (" is-invalid" if form.name.errors else ""), placeholder="Enter package name") }}
+                        {% for error in form.name.errors %}
+                            <div class="invalid-feedback">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="form-group mb-3">
+                        <label for="category">{{ form.category.label }}</label>
+                        {{ form.category(class="form-control" + (" is-invalid" if form.category.errors else "")) }}
+                        {% for error in form.category.errors %}
+                            <div class="invalid-feedback">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group mb-3">
+                        <label for="price">{{ form.price.label }}</label>
+                        {{ form.price(class="form-control" + (" is-invalid" if form.price.errors else ""), placeholder="Enter price in ₹") }}
+                        {% for error in form.price.errors %}
+                            <div class="invalid-feedback">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="form-group mb-3">
+                        <label for="duration">{{ form.duration.label }}</label>
+                        {{ form.duration(class="form-control" + (" is-invalid" if form.duration.errors else ""), placeholder="e.g., 5 days, 4 nights") }}
+                        {% for error in form.duration.errors %}
+                            <div class="invalid-feedback">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-group mb-3">
+                <label for="location_id">{{ form.location_id.label }}</label>
+                {{ form.location_id(class="form-control" + (" is-invalid" if form.location_id.errors else "")) }}
+                {% for error in form.location_id.errors %}
+                    <div class="invalid-feedback">{{ error }}</div>
+                {% endfor %}
+                {% if form.location_id.choices|length == 0 %}
+                    <div class="form-text text-warning">
+                        No locations available. <a href="{{ url_for('admin.add_location') }}">Add a location first</a>.
+                    </div>
+                {% endif %}
+            </div>
+            
+            <div class="form-group mb-3">
+                <label for="featured_image">{{ form.featured_image.label }}</label>
+                {{ form.featured_image(class="form-control" + (" is-invalid" if form.featured_image.errors else ""), placeholder="Enter image URL") }}
+                {% for error in form.featured_image.errors %}
+                    <div class="invalid-feedback">{{ error }}</div>
+                {% endfor %}
+                <div class="form-text">Enter a URL for the featured image or upload an image in the Images section.</div>
+            </div>
+            
+            <div class="form-group mb-3">
+                <label for="description">{{ form.description.label }}</label>
+                {{ form.description(class="form-control" + (" is-invalid" if form.description.errors else ""), rows="8", placeholder="Enter detailed package description") }}
+                {% for error in form.description.errors %}
+                    <div class="invalid-feedback">{{ error }}</div>
+                {% endfor %}
+            </div>
+            
+            <div class="form-group mt-4 d-flex gap-2">
+                {{ form.submit(class="btn btn-primary") }}
+                <a href="{{ url_for('admin.packages') }}" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Package Form Guide -->
+<div class="admin-card mt-4">
+    <div class="card-body">
+        <h4 class="mb-3"><i class="fas fa-info-circle me-2"></i> Package Form Guide</h4>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="guide-item">
+                    <h5>Package Name</h5>
+                    <p>Choose a descriptive and appealing name that reflects the experience. Good names often include the location and type of experience (e.g., "Royal Rajasthan Explorer").</p>
+                </div>
+                
+                <div class="guide-item">
+                    <h5>Price</h5>
+                    <p>Enter the base price per person in Indian Rupees. This should include all primary inclusions mentioned in the package description.</p>
+                </div>
+                
+                <div class="guide-item">
+                    <h5>Duration</h5>
+                    <p>Specify the length of the trip in a clear format (e.g., "7 days, 6 nights", "3 days, 2 nights").</p>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="guide-item">
+                    <h5>Category</h5>
+                    <p>Select the primary focus of the package:</p>
+                    <ul>
+                        <li><strong>Spiritual:</strong> Religious sites, pilgrimages, meditation experiences</li>
+                        <li><strong>Cultural:</strong> Traditions, festivals, arts, and local communities</li>
+                        <li><strong>Adventure:</strong> Trekking, wildlife, water sports, outdoor activities</li>
+                        <li><strong>Wellness:</strong> Yoga, Ayurveda, spas, retreats</li>
+                        <li><strong>Heritage:</strong> Historical monuments, ancient sites, architectural marvels</li>
+                    </ul>
+                </div>
+                
+                <div class="guide-item">
+                    <h5>Description</h5>
+                    <p>Provide a detailed, engaging description of the package. Include highlights, day-by-day itinerary, inclusions, exclusions, and any special experiences.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block additional_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Preview image when URL is entered
+        const imageUrlInput = document.getElementById('featured_image');
+        
+        if (imageUrlInput) {
+            // Add container for preview if it doesn't exist
+            if (!document.getElementById('image-preview-container')) {
+                const previewContainer = document.createElement('div');
+                previewContainer.id = 'image-preview-container';
+                previewContainer.className = 'mt-2';
+                imageUrlInput.parentNode.appendChild(previewContainer);
+            }
+            
+            const previewContainer = document.getElementById('image-preview-container');
+            
+            // Initialize with current value if it exists
+            if (imageUrlInput.value) {
+                previewContainer.innerHTML = `
+                    <div class="image-preview-wrapper mt-2">
+                        <img src="${imageUrlInput.value}" class="img-thumbnail" style="max-height: 200px;" alt="Image preview">
+                    </div>
+                `;
+            }
+            
+            imageUrlInput.addEventListener('input', function() {
+                if (this.value) {
+                    previewContainer.innerHTML = `
+                        <div class="image-preview-wrapper mt-2">
+                            <img src="${this.value}" class="img-thumbnail" style="max-height: 200px;" alt="Image preview" onerror="this.onerror=null;this.src='https://via.placeholder.com/300x200?text=Invalid+Image+URL';">
+                        </div>
+                    `;
+                } else {
+                    previewContainer.innerHTML = '';
+                }
+            });
+        }
+    });
+</script>
+{% endblock %}

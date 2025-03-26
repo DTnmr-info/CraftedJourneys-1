@@ -1,0 +1,180 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Manage Locations - Admin{% endblock %}
+
+{% block content %}
+<div class="admin-header">
+    <div>
+        <h1 class="admin-title">Manage Locations</h1>
+        <p class="admin-subtitle">Create, edit, and manage travel destinations</p>
+    </div>
+    <div>
+        <a href="{{ url_for('admin.add_location') }}" class="btn btn-primary">
+            <i class="fas fa-plus me-2"></i> Add New Location
+        </a>
+    </div>
+</div>
+
+<!-- Locations Table -->
+<div class="admin-card">
+    <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div class="search-container">
+                <input type="text" id="location-search" class="form-control" placeholder="Search locations...">
+            </div>
+            <div class="filter-container">
+                <form method="GET" class="d-flex">
+                    <select name="region" class="form-select table-filter">
+                        <option value="">All Regions</option>
+                        <option value="North India">North India</option>
+                        <option value="South India">South India</option>
+                        <option value="East India">East India</option>
+                        <option value="West India">West India</option>
+                        <option value="Central India">Central India</option>
+                        <option value="Northeast India">Northeast India</option>
+                    </select>
+                </form>
+            </div>
+        </div>
+        
+        {% if locations %}
+            <div class="table-responsive">
+                <table class="table table-hover admin-table">
+                    <thead>
+                        <tr>
+                            <th scope="col">ID</th>
+                            <th scope="col">Name</th>
+                            <th scope="col">Region</th>
+                            <th scope="col">Packages</th>
+                            <th scope="col">Coordinates</th>
+                            <th scope="col">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for location in locations %}
+                            <tr class="location-item">
+                                <td>{{ location.id }}</td>
+                                <td class="location-name">{{ location.name }}</td>
+                                <td>{{ location.region }}</td>
+                                <td>{{ location.packages|length }}</td>
+                                <td>{{ location.latitude }}, {{ location.longitude }}</td>
+                                <td>
+                                    <div class="btn-group">
+                                        <a href="{{ url_for('main.location_detail', location_id=location.id) }}" class="btn btn-sm btn-outline-primary" title="View" target="_blank">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                        <a href="{{ url_for('admin.edit_location', location_id=location.id) }}" class="btn btn-sm btn-outline-secondary" title="Edit">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <form action="{{ url_for('admin.delete_location', location_id=location.id) }}" method="POST" class="d-inline">
+                                            <button type="submit" class="btn btn-sm btn-outline-danger delete-btn" title="Delete">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="text-center py-5">
+                <i class="fas fa-map-marked-alt fa-3x mb-3 text-muted"></i>
+                <h3>No Locations Found</h3>
+                <p>There are no locations available matching your criteria.</p>
+                <a href="{{ url_for('admin.add_location') }}" class="btn btn-primary mt-3">Add Your First Location</a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Help Section -->
+<div class="admin-card mt-4">
+    <div class="card-body">
+        <h4 class="mb-3"><i class="fas fa-info-circle me-2"></i> Managing Locations</h4>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="help-item">
+                    <h5>Adding Locations</h5>
+                    <p>Create new destinations by clicking the "Add New Location" button. Provide essential details like name, region, description, and coordinates.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="help-item">
+                    <h5>Editing Locations</h5>
+                    <p>Update existing locations by clicking the edit icon. You can modify all details including coordinates and featured images.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="help-item">
+                    <h5>Deleting Locations</h5>
+                    <p>Remove locations by clicking the delete icon. Note that you cannot delete a location that has packages associated with it. Remove those packages first.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Map Section -->
+<div class="admin-card mt-4">
+    <div class="card-body">
+        <h4 class="mb-3"><i class="fas fa-map me-2"></i> Location Map</h4>
+        <div id="locations-admin-map" class="admin-map" style="height: 400px;" data-locations="{{ locations }}"></div>
+    </div>
+</div>
+{% endblock %}
+
+{% block additional_css %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+{% endblock %}
+
+{% block additional_js %}
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize locations map
+        const locationsMap = document.getElementById('locations-admin-map');
+        
+        if (locationsMap) {
+            // Initialize map with India centered
+            const map = L.map('locations-admin-map').setView([20.5937, 78.9629], 5);
+            
+            // Add OpenStreetMap tile layer
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(map);
+            
+            // Get location markers from the data attribute
+            try {
+                const locationsData = JSON.parse('{{ locations }}');
+                
+                // Create an array to hold all location coordinates
+                const coordinates = [];
+                
+                // Add markers for each location
+                locationsData.forEach(location => {
+                    if (location.latitude && location.longitude) {
+                        const marker = L.marker([location.latitude, location.longitude]).addTo(map);
+                        
+                        marker.bindPopup(`
+                            <strong>${location.name}</strong><br>
+                            ${location.region}<br>
+                            <a href="/admin/locations/edit/${location.id}">Edit Location</a>
+                        `);
+                        
+                        coordinates.push([location.latitude, location.longitude]);
+                    }
+                });
+                
+                // Fit the map to show all markers if we have any
+                if (coordinates.length > 0) {
+                    map.fitBounds(L.latLngBounds(coordinates));
+                }
+            } catch (error) {
+                console.error('Error parsing locations data:', error);
+            }
+        }
+    });
+</script>
+{% endblock %}

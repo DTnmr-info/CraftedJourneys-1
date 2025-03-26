@@ -1,0 +1,313 @@
+{% extends "base.html" %}
+
+{% block title %}{{ location.name }} - Crafted Journeys{% endblock %}
+
+{% block additional_css %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+{% endblock %}
+
+{% block content %}
+<!-- Location Header -->
+<section class="location-detail-header">
+    {% if location.featured_image %}
+        <img src="{{ location.featured_image }}" alt="{{ location.name }}" class="location-detail-image">
+    {% else %}
+        <div class="location-detail-image" style="background-color: #f8f9fa; display: flex; align-items: center; justify-content: center;">
+            <i class="fas fa-map-marked-alt" style="font-size: 5rem; color: #6c757d;"></i>
+        </div>
+    {% endif %}
+    
+    <div class="location-detail-content">
+        <span class="location-detail-region">{{ location.region }}</span>
+        <h1>{{ location.name }}</h1>
+        <div class="location-detail-meta">
+            <span><i class="fas fa-map-pin"></i> {{ location.region }}</span>
+            <span><i class="fas fa-suitcase"></i> {{ packages|length }} Available Packages</span>
+        </div>
+    </div>
+</section>
+
+<!-- Location Content -->
+<section class="location-content section-padding">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8">
+                <!-- Overview Section -->
+                <div class="location-overview">
+                    <h2>About {{ location.name }}</h2>
+                    <div class="location-description">
+                        {{ location.description|safe }}
+                    </div>
+                </div>
+                
+                <!-- Highlights Section -->
+                <div class="location-highlights">
+                    <h2>Highlights</h2>
+                    
+                    <div class="highlights-grid">
+                        <div class="highlight-card">
+                            <div class="highlight-icon">
+                                <i class="fas fa-landmark"></i>
+                            </div>
+                            <h3>Cultural Heritage</h3>
+                            <p>Explore ancient temples, historic monuments, and traditional arts that showcase the region's rich cultural legacy.</p>
+                        </div>
+                        
+                        <div class="highlight-card">
+                            <div class="highlight-icon">
+                                <i class="fas fa-utensils"></i>
+                            </div>
+                            <h3>Culinary Delights</h3>
+                            <p>Savor the unique flavors and specialties of local cuisine, from street food to traditional dishes prepared with authentic recipes.</p>
+                        </div>
+                        
+                        <div class="highlight-card">
+                            <div class="highlight-icon">
+                                <i class="fas fa-people-carry"></i>
+                            </div>
+                            <h3>Local Experiences</h3>
+                            <p>Engage with local communities, artisans, and traditions for an authentic and immersive cultural experience.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Packages Section -->
+                <div class="location-packages">
+                    <h2>Available Packages in {{ location.name }}</h2>
+                    
+                    {% if packages %}
+                        <div class="row">
+                            {% for package in packages %}
+                            <div class="col-md-6 mb-4">
+                                <div class="package-card">
+                                    <div class="package-image">
+                                        {% if package.featured_image %}
+                                            <img src="{{ package.featured_image }}" alt="{{ package.name }}">
+                                        {% else %}
+                                            <div class="placeholder-image">
+                                                <i class="fas fa-mountain"></i>
+                                            </div>
+                                        {% endif %}
+                                        <div class="package-category">{{ package.category }}</div>
+                                    </div>
+                                    <div class="package-content">
+                                        <h3>{{ package.name }}</h3>
+                                        <div class="package-meta">
+                                            <span><i class="fas fa-map-marker-alt"></i> {{ location.name }}</span>
+                                            <span><i class="fas fa-clock"></i> {{ package.duration }}</span>
+                                        </div>
+                                        <p>{{ package.description|truncate(100) }}</p>
+                                        <div class="package-footer">
+                                            <div class="package-price">₹{{ package.price|int }}</div>
+                                            <a href="{{ url_for('main.package_detail', package_id=package.id) }}" class="btn btn-outline-primary">View Details</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="no-packages">
+                            <div class="text-center">
+                                <i class="fas fa-search fa-3x mb-3"></i>
+                                <h3>No Packages Found</h3>
+                                <p>We don't have any packages available for this location at the moment. Please check back later or contact us for custom itineraries.</p>
+                                <a href="{{ url_for('main.contact') }}" class="btn btn-primary mt-3">Contact Us</a>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <!-- Gallery Section -->
+                <div class="location-gallery">
+                    <h2>Photo Gallery</h2>
+                    
+                    <div class="gallery-grid">
+                        <div class="gallery-item large">
+                            <img src="https://images.unsplash.com/photo-1524492412937-b28074a5d7da?auto=format&fit=crop&w=800&q=80" alt="Gallery Image 1">
+                        </div>
+                        <div class="gallery-item">
+                            <img src="https://images.unsplash.com/photo-1477587458883-47145ed94245?auto=format&fit=crop&w=400&q=80" alt="Gallery Image 2">
+                        </div>
+                        <div class="gallery-item">
+                            <img src="https://images.unsplash.com/photo-1546961329-78bef0414d7c?auto=format&fit=crop&w=400&q=80" alt="Gallery Image 3">
+                        </div>
+                        <div class="gallery-item">
+                            <img src="https://images.unsplash.com/photo-1544161515-4ab6ce6db874?auto=format&fit=crop&w=400&q=80" alt="Gallery Image 4">
+                        </div>
+                        <div class="gallery-item">
+                            <img src="https://images.unsplash.com/photo-1517759544474-6b28a886d22d?auto=format&fit=crop&w=400&q=80" alt="Gallery Image 5">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4">
+                <!-- Map Section -->
+                <div class="location-map">
+                    <div class="location-card">
+                        <h3>Location Map</h3>
+                        <div id="location-map" class="location-map-container" data-latitude="{{ location.latitude }}" data-longitude="{{ location.longitude }}" data-name="{{ location.name }}"></div>
+                    </div>
+                </div>
+                
+                <!-- Best Time to Visit -->
+                <div class="best-time">
+                    <div class="location-card">
+                        <h3>Best Time to Visit</h3>
+                        
+                        <div class="season-card">
+                            <div class="season-header">
+                                <div class="season-icon">
+                                    <i class="fas fa-sun"></i>
+                                </div>
+                                <h4 class="season-title">Peak Season</h4>
+                            </div>
+                            <p>{% if location.region == 'North India' %}
+                                October to March is ideal with pleasant weather and clear skies.
+                               {% elif location.region == 'South India' %}
+                                November to February offers comfortable temperatures and low humidity.
+                               {% elif location.region == 'Northeast India' %}
+                                October to April, avoiding the heavy monsoon season.
+                               {% elif location.region == 'West India' %}
+                                November to February for coastal areas; July to September for monsoon greenery.
+                               {% elif location.region == 'East India' %}
+                                October to March is pleasant with minimal rainfall.
+                               {% else %}
+                                October to March generally offers the most pleasant weather.
+                               {% endif %}</p>
+                        </div>
+                        
+                        <div class="season-card">
+                            <div class="season-header">
+                                <div class="season-icon">
+                                    <i class="fas fa-umbrella"></i>
+                                </div>
+                                <h4 class="season-title">Monsoon Season</h4>
+                            </div>
+                            <p>{% if location.region == 'North India' %}
+                                July to September brings heavy rainfall, especially in mountainous areas.
+                               {% elif location.region == 'South India' %}
+                                June to September on the west coast; October to December on the east coast.
+                               {% elif location.region == 'Northeast India' %}
+                                May to September experiences very heavy rainfall, making travel difficult.
+                               {% elif location.region == 'West India' %}
+                                June to September brings heavy rainfall and lush landscapes.
+                               {% elif location.region == 'East India' %}
+                                June to September sees significant rainfall and high humidity.
+                               {% else %}
+                                June to September is generally the monsoon period across most regions.
+                               {% endif %}</p>
+                        </div>
+                        
+                        <div class="season-card">
+                            <div class="season-header">
+                                <div class="season-icon">
+                                    <i class="fas fa-temperature-high"></i>
+                                </div>
+                                <h4 class="season-title">Off Season</h4>
+                            </div>
+                            <p>{% if location.region == 'North India' %}
+                                April to June brings intense heat but fewer tourists and better rates.
+                               {% elif location.region == 'South India' %}
+                                March to May is hot and humid but ideal for budget travelers.
+                               {% elif location.region == 'Northeast India' %}
+                                The monsoon months (May-September) offer lush scenery but challenging conditions.
+                               {% elif location.region == 'West India' %}
+                                April to June is extremely hot but offers fewer crowds.
+                               {% elif location.region == 'East India' %}
+                                April to June experiences high temperatures and humidity.
+                               {% else %}
+                                Summer months (April-June) generally see fewer tourists due to heat.
+                               {% endif %}</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Contact Card -->
+                <div class="contact-card-wrapper mt-4">
+                    <div class="location-card">
+                        <h3>Need More Information?</h3>
+                        <p>Contact our travel experts to learn more about {{ location.name }} or to create a custom itinerary for your journey.</p>
+                        <a href="{{ url_for('main.contact') }}" class="btn btn-primary w-100">Contact Us</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Related Destinations -->
+<section class="related-destinations section-padding bg-light">
+    <div class="container">
+        <div class="section-title text-center mb-5">
+            <h2>Explore More Destinations in {{ location.region }}</h2>
+            <p>Discover other fascinating places in the region</p>
+        </div>
+        
+        <div class="row">
+            <!-- This would be populated with actual related locations from the database -->
+            <div class="col-md-4 mb-4">
+                <div class="location-card">
+                    <div class="location-image">
+                        <img src="https://images.unsplash.com/photo-1524492412937-b28074a5d7da?auto=format&fit=crop&w=800&q=80" alt="Related Location 1">
+                        <div class="location-region">{{ location.region }}</div>
+                    </div>
+                    <div class="location-content">
+                        <h3>Taj Mahal, Agra</h3>
+                        <p>The iconic white marble mausoleum, a UNESCO World Heritage site and one of the Seven Wonders of the World.</p>
+                        <a href="#" class="btn btn-outline-primary">Explore Location</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4">
+                <div class="location-card">
+                    <div class="location-image">
+                        <img src="https://images.unsplash.com/photo-1477587458883-47145ed94245?auto=format&fit=crop&w=800&q=80" alt="Related Location 2">
+                        <div class="location-region">{{ location.region }}</div>
+                    </div>
+                    <div class="location-content">
+                        <h3>Jaipur, Rajasthan</h3>
+                        <p>The Pink City with its majestic palaces, vibrant bazaars, and rich Rajput heritage.</p>
+                        <a href="#" class="btn btn-outline-primary">Explore Location</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4">
+                <div class="location-card">
+                    <div class="location-image">
+                        <img src="https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?auto=format&fit=crop&w=800&q=80" alt="Related Location 3">
+                        <div class="location-region">{{ location.region }}</div>
+                    </div>
+                    <div class="location-content">
+                        <h3>Varanasi, Uttar Pradesh</h3>
+                        <p>One of the oldest continuously inhabited cities in the world, renowned for its ghats along the sacred Ganges River.</p>
+                        <a href="#" class="btn btn-outline-primary">Explore Location</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section">
+    <div class="container">
+        <div class="cta-content">
+            <h2>Ready to Experience {{ location.name }}?</h2>
+            <p>Let us help you plan the perfect journey to this incredible destination</p>
+            <div class="cta-buttons">
+                <a href="{{ url_for('main.packages') }}" class="btn btn-primary btn-lg">Explore Packages</a>
+                <a href="{{ url_for('main.contact') }}" class="btn btn-outline-light btn-lg">Contact Us</a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block additional_js %}
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+<script src="{{ url_for('static', filename='js/maps.js') }}"></script>
+{% endblock %}
