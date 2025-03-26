@@ -1,7 +1,10 @@
 Flask
-Flask-SQLAlchemy
+SQLAlchemy
 Flask-Login
-Flask-WTF
+WTForms
 Werkzeug
+flask_sqlalchemy
 gunicorn
+flask_wtf
 datetime
+psycopg2-binary
