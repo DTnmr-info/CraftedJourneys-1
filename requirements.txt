@@ -8,3 +8,4 @@ gunicorn
 flask_wtf
 datetime
 psycopg2-binary
+flask-session
