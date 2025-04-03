@@ -2,7 +2,6 @@ import logging
 from flask import Blueprint, render_template, redirect, url_for, flash, request, abort
 from flask_login import login_required, current_user
 from models import Package, Location, Inquiry, Image
-from flask_sqlalchemy import pagination
 from forms import PackageForm, LocationForm, ImageUploadForm
 from app import db
 from datetime import datetime
@@ -140,28 +139,22 @@ def delete_package(package_id):
 @admin_bp.route('/locations')
 @login_required
 def locations():
-    page = request.args.get('page', 1, type=int)  # Get current page, default is 1
-    per_page = 12  # Set items per page
-    query = Location.query
-    pagination = query.paginate(page=page, per_page=per_page, error_out=False)
+    locations = Location.query.all()
     locations_data = []
-    for location in pagination.items:
-        locations_data.append({
-            "id": location.id,
-            "name": location.name,
-            "region": location.region,
-            "latitude": location.latitude,
-            "longitude": location.longitude,
-            "featured_image": location.featured_image,
-            "description": location.description,
-            "packages": location.packages
-        })
+     for location in locations:
+         locations_data.append({
+             "id": location.id,
+             "name": location.name,
+             "region": location.region,
+             "latitude": location.latitude,
+             "longitude": location.longitude,
+             "featured_image": location.featured_image,
+             "description": location.description,
+             "packages": location.packages
+         })
+     return render_template('admin/locations.html', locations=locations_data)
 
-    return render_template(
-        'admin.locations.html', 
-        locations=locations_data,
-        pagination=pagination  # Send pagination object to the template
-    )
+
 @admin_bp.route('/locations/add', methods=['GET', 'POST'])
 @login_required
 def add_location():
