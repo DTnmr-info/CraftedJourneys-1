@@ -140,19 +140,10 @@ def delete_package(package_id):
 @admin_bp.route('/locations')
 @login_required
 def locations():
-    region = request.args.get('region', None)
     page = request.args.get('page', 1, type=int)  # Get current page, default is 1
     per_page = 12  # Set items per page
-
     query = Location.query
-
-    if region:
-        query = query.filter(Location.region == region)
-
     pagination = query.paginate(page=page, per_page=per_page, error_out=False)
-
-    regions = db.session.query(Location.region).distinct().all()
-
     locations_data = []
     for location in pagination.items:
         locations_data.append({
@@ -169,8 +160,6 @@ def locations():
     return render_template(
         'locations.html', 
         locations=locations_data,
-        regions=[reg[0] for reg in regions],
-        selected_region=region,
         pagination=pagination  # Send pagination object to the template
     )
 @admin_bp.route('/locations/add', methods=['GET', 'POST'])
