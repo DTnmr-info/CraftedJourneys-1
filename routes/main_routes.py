@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from models import Package, Location, Inquiry
-from flask_sqlalchemy import Pagination
+from flask_sqlalchemy import pagination
 from forms import ContactForm
 from app import db
 
