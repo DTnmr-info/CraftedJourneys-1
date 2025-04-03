@@ -141,19 +141,18 @@ def delete_package(package_id):
 def locations():
     locations = Location.query.all()
     locations_data = []
-     for location in locations:
-         locations_data.append({
-             "id": location.id,
-             "name": location.name,
-             "region": location.region,
-             "latitude": location.latitude,
-             "longitude": location.longitude,
-             "featured_image": location.featured_image,
-             "description": location.description,
-             "packages": location.packages
-         })
-     return render_template('admin/locations.html', locations=locations_data)
-
+    for location in locations:
+        locations_data.append({
+            "id": location.id,
+            "name": location.name,
+            "region": location.region,
+            "latitude": location.latitude,
+            "longitude": location.longitude,
+            "featured_image": location.featured_image,
+            "description": location.description,
+            "packages": location.packages
+        })
+    return render_template('admin/locations.html', locations=locations_data)
 
 @admin_bp.route('/locations/add', methods=['GET', 'POST'])
 @login_required
