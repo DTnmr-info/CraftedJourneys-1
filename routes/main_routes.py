@@ -91,7 +91,7 @@ def package_detail(package_id):
 def locations():
     region = request.args.get('region', None)
     page = request.args.get('page', 1, type=int)  # Get current page, default is 1
-    per_page = 6  # Set items per page
+    per_page = 12  # Set items per page
 
     query = Location.query
 
