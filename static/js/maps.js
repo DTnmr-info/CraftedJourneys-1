@@ -1,60 +1,121 @@
 /**
- * Crafted Journeys - Locations Page Map Integration
+ * Crafted Journeys - Maps Integration
  * Author: Crafted Journeys Team
- * Version: 1.1
+ * Version: 1.0
  */
 
-document.addEventListener('DOMContentLoaded', function () {
-    console.log("📍 Map script loaded!");
-
-    // ============================
-    // 🌍 LOCATIONS PAGE MAP (Database Locations)
-    // ============================
+document.addEventListener('DOMContentLoaded', function() {
+    
+    // Initialize Location Detail Map
+    const locationMap = document.getElementById('location-map');
+    
+    if (locationMap) {
+        // Get coordinates from data attributes
+        const latitude = parseFloat(locationMap.dataset.latitude);
+        const longitude = parseFloat(locationMap.dataset.longitude);
+        const locationName = locationMap.dataset.name;
+        
+        if (!isNaN(latitude) && !isNaN(longitude)) {
+            // Initialize map
+            const map = L.map('location-map').setView([latitude, longitude], 12);
+            
+            // Add OpenStreetMap tile layer
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(map);
+            
+            // Add marker with popup
+            L.marker([latitude, longitude]).addTo(map)
+                .bindPopup(`<strong>${locationName}</strong>`)
+                .openPopup();
+        }
+    }
+    
+    // Initialize Locations Page Map
+document.addEventListener("DOMContentLoaded", function () {
     const locationsMap = document.getElementById('locations-map');
+
     if (locationsMap) {
+        // Initialize map centered on India
         const map = L.map('locations-map').setView([20.5937, 78.9629], 5);
 
+        // Add OpenStreetMap tile layer
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; OpenStreetMap contributors'
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(map);
+
+        // Default regions if no locations from the database
+        const defaultRegions = [
+            { name: "Delhi", region: "North India", latitude: 28.6139, longitude: 77.2090 },
+            { name: "Mumbai", region: "West India", latitude: 19.0760, longitude: 72.8777 },
+            { name: "Chennai", region: "South India", latitude: 13.0827, longitude: 80.2707 },
+            { name: "Kolkata", region: "East India", latitude: 22.5726, longitude: 88.3639 },
+            { name: "Guwahati", region: "Northeast India", latitude: 26.1445, longitude: 91.7362 }
+        ];
 
         try {
             let locations = [];
+            
+            // Retrieve locations data from the dataset attribute
             if (locationsMap.dataset.locations) {
                 locations = JSON.parse(locationsMap.dataset.locations);
             }
 
             if (Array.isArray(locations) && locations.length > 0) {
-                console.log("✅ Database Locations Loaded:", locations);
+                console.log("Database Locations Loaded:", locations);
+
+                // Create a bounds object for map fitting
                 const bounds = L.latLngBounds();
 
+                // Add markers for database locations
                 locations.forEach(location => {
                     if (location.latitude && location.longitude) {
                         const marker = L.marker([location.latitude, location.longitude])
                             .addTo(map)
                             .bindPopup(`
                                 <strong>${location.name}</strong><br>
-                                ${location.region || ''}<br>
+                                ${location.region}<br>
                                 <a href="/locations/${location.id}">View Details</a>
                             `);
                         bounds.extend(marker.getLatLng());
                     }
                 });
 
+                // Fit the map to display all markers
                 if (locations.length === 1) {
                     map.setView([locations[0].latitude, locations[0].longitude], 9);
                 } else {
                     map.fitBounds(bounds, { padding: [50, 50] });
                 }
+
             } else {
-                console.warn("⚠️ No locations found in database.");
+                console.warn("No locations found in the database. Using default regions.");
+
+                // Use default markers if no locations exist in the database
+                defaultRegions.forEach(region => {
+                    L.marker([region.latitude, region.longitude]).addTo(map)
+                        .bindPopup(`
+                            <strong>${region.name}</strong><br>
+                            ${region.region}<br>
+                            <a href="/locations?region=${encodeURIComponent(region.region)}">View Region</a>
+                        `);
+                });
             }
         } catch (error) {
-            console.error("❌ Error loading locations from database:", error);
+            console.error("Error loading locations:", error);
+
+            // Fallback to default regions in case of an error
+            defaultRegions.forEach(region => {
+                L.marker([region.latitude, region.longitude]).addTo(map)
+                    .bindPopup(`
+                        <strong>${region.name}</strong><br>
+                        ${region.region}<br>
+                        <a href="/locations?region=${encodeURIComponent(region.region)}">View Region</a>
+                    `);
+            });
         }
     }
 });
-
 
     
     // Initialize Package Detail Map
