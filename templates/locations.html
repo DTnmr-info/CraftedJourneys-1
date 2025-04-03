@@ -74,46 +74,6 @@
                     </div>
                 </div>
                 {% endfor %}
-                 <!-- Pagination -->
-            <nav aria-label="Locations pagination" class="mt-5">
-                <ul class="pagination justify-content-center">
-                    <!-- Previous Page -->
-                    <li class="page-item {% if not locations.has_prev %}disabled{% endif %}">
-                        <a class="page-link" href="{{ url_for('main.locations', page=locations.prev_num, region=selected_region) }}" aria-label="Previous">
-                            <span aria-hidden="true">&laquo;</span>
-                        </a>
-                    </li>
-                    
-                    <!-- Page Numbers -->
-                    {% for page_num in locations.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=3) %}
-                        {% if page_num %}
-                            <li class="page-item {% if locations.page == page_num %}active{% endif %}">
-                                <a class="page-link" href="{{ url_for('main.locations', page=page_num, region=selected_region) }}">{{ page_num }}</a>
-                            </li>
-                        {% else %}
-                            <li class="page-item disabled"><span class="page-link">...</span></li>
-                        {% endif %}
-                    {% endfor %}
-                    
-                    <!-- Next Page -->
-                    <li class="page-item {% if not locations.has_next %}disabled{% endif %}">
-                        <a class="page-link" href="{{ url_for('main.locations', page=locations.next_num, region=selected_region) }}" aria-label="Next">
-                            <span aria-hidden="true">&raquo;</span>
-                        </a>
-                    </li>
-                </ul>
-            </nav>
-            
-        {% else %}
-            <div class="no-locations">
-                <div class="text-center">
-                    <i class="fas fa-search fa-3x mb-3"></i>
-                    <h3>No Locations Found</h3>
-                    <p>We couldn't find any locations matching your search criteria.</p>
-                    <a href="{{ url_for('main.locations') }}" class="btn btn-primary mt-3">Clear Filters</a>
-                </div>
-            </div>
-        {% endif %}
             </div>
         {% else %}
             <div class="no-locations">
