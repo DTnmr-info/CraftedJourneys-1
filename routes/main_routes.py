@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from models import Package, Location, Inquiry
+from flask_sqlalchemy import Pagination
 from forms import ContactForm
 from app import db
 
@@ -89,17 +90,20 @@ def package_detail(package_id):
 @main_bp.route('/locations')
 def locations():
     region = request.args.get('region', None)
-    
+    page = request.args.get('page', 1, type=int)  # Get current page, default is 1
+    per_page = 6  # Set items per page
+
     query = Location.query
-    
+
     if region:
         query = query.filter(Location.region == region)
 
-    locations = query.all()
+    pagination = query.paginate(page=page, per_page=per_page, error_out=False)
+
     regions = db.session.query(Location.region).distinct().all()
 
     locations_data = []
-    for location in locations:
+    for location in pagination.items:
         locations_data.append({
             "id": location.id,
             "name": location.name,
@@ -115,9 +119,9 @@ def locations():
         'locations.html', 
         locations=locations_data,
         regions=[reg[0] for reg in regions],
-        selected_region=region
+        selected_region=region,
+        pagination=pagination  # Send pagination object to the template
     )
-
 @main_bp.route('/locations/<int:location_id>')
 def location_detail(location_id):
     location = Location.query.get_or_404(location_id)
