@@ -158,7 +158,7 @@ def locations():
         })
 
     return render_template(
-        'locations.html', 
+        'admin.locations.html', 
         locations=locations_data,
         pagination=pagination  # Send pagination object to the template
     )
