@@ -2,6 +2,7 @@ import logging
 from flask import Blueprint, render_template, redirect, url_for, flash, request, abort
 from flask_login import login_required, current_user
 from models import Package, Location, Inquiry, Image
+from flask_sqlalchemy import pagination
 from forms import PackageForm, LocationForm, ImageUploadForm
 from app import db
 from datetime import datetime
