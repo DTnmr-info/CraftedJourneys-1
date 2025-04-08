@@ -2,6 +2,7 @@ import os
 from datetime import datetime
 from flask import Blueprint, render_template, redirect, url_for, flash, abort, send_file, request
 from flask_login import login_required, current_user
+from sqlalchemy.orm import joinedload
 from app import db
 from models import User, Package, Payment, Location, Inquiry, Image  # Ensure Image is imported
 from utils import generate_receipt_pdf
@@ -25,6 +26,7 @@ def check_admin():
 @login_required
 def dashboard():
     """Admin dashboard with overview statistics"""
+
     # Basic statistics
     user_count = User.query.count()
     package_count = Package.query.count()
@@ -33,24 +35,29 @@ def dashboard():
     pending_payments = Payment.query.filter_by(status='pending').count()
     cancelled_payments = Payment.query.filter_by(status='cancelled').count()
 
-    # Calculate total revenue (only from completed payments)
+    # Total revenue from completed payments
     completed_payment_records = Payment.query.filter_by(status='completed').all()
     total_revenue = sum(payment.amount for payment in completed_payment_records) if completed_payment_records else 0
 
-    # Get recent payments for display
-    recent_payments = Payment.query.order_by(Payment.created_at.desc()).limit(5).all()
+    # Recent payments with eager loading of related packages
+    recent_payments = (
+        Payment.query
+        .options(joinedload(Payment.package))
+        .order_by(Payment.created_at.desc())
+        .limit(5)
+        .all()
+    )
 
-    # Get new packages added in the last month
-    thirty_days_ago = datetime.utcnow().replace(day=1)  # First day of current month (simplified for demo)
+    # New packages added in the current month
+    thirty_days_ago = datetime.utcnow().replace(day=1)  # First day of current month
     new_packages = Package.query.filter(Package.created_at >= thirty_days_ago).count()
 
-    # Placeholder values for growth percentages (would normally be calculated)
+    # Placeholder growth values (replace with real calculations as needed)
     booking_growth = 15
     revenue_growth = 12
     user_growth = 8
 
-    # Popular packages calculation
-    # In a real application, this would query for packages with the most bookings
+    # Popular packages based on booking count and revenue
     popular_packages = []
     packages = Package.query.limit(5).all()
 
@@ -64,30 +71,32 @@ def dashboard():
             package.revenue = revenue
             popular_packages.append(package)
 
+    # Sort popular packages by booking count and limit to top 5
     popular_packages.sort(key=lambda x: x.booking_count, reverse=True)
-    popular_packages = popular_packages[:5]  # Top 5
+    popular_packages = popular_packages[:5]
 
-    # For the most popular package card
+    # Most popular package for the highlight card
     popular_package = popular_packages[0] if popular_packages else None
     popular_package_count = popular_package.booking_count if popular_package else 0
 
-    return render_template('admin/dashboard.html',
-                           total_payments=total_payments,
-                           completed_payments=completed_payments,
-                           pending_payments=pending_payments,
-                           cancelled_payments=cancelled_payments,
-                           total_revenue=total_revenue,
-                           user_count=user_count,
-                           package_count=package_count,
-                           new_packages=new_packages,
-                           recent_payments=recent_payments,
-                           booking_growth=booking_growth,
-                           revenue_growth=revenue_growth,
-                           user_growth=user_growth,
-                           popular_packages=popular_packages,
-                           popular_package=popular_package,
-                           popular_package_count=popular_package_count)
-
+    return render_template(
+        'admin/dashboard.html',
+        total_payments=total_payments,
+        completed_payments=completed_payments,
+        pending_payments=pending_payments,
+        cancelled_payments=cancelled_payments,
+        total_revenue=total_revenue,
+        user_count=user_count,
+        package_count=package_count,
+        new_packages=new_packages,
+        recent_payments=recent_payments,
+        booking_growth=booking_growth,
+        revenue_growth=revenue_growth,
+        user_growth=user_growth,
+        popular_packages=popular_packages,
+        popular_package=popular_package,
+        popular_package_count=popular_package_count
+    )
 
 @admin_bp.route('/payments')
 @login_required
