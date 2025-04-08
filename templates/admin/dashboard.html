@@ -34,7 +34,7 @@
             <p>Available travel experiences</p>
         </div>
     </div>
-    
+
     <div class="stats-card">
         <div class="stats-icon blue">
             <i class="fas fa-map-marker-alt"></i>
@@ -44,7 +44,7 @@
             <p>Available locations</p>
         </div>
     </div>
-    
+
     <div class="stats-card">
         <div class="stats-icon yellow">
             <i class="fas fa-envelope"></i>
@@ -54,7 +54,7 @@
             <p>Customer inquiries received</p>
         </div>
     </div>
-    
+
     <div class="stats-card">
         <div class="stats-icon green">
             <i class="fas fa-hourglass-half"></i>
@@ -62,6 +62,26 @@
         <div class="stats-content">
             <h3>{{ inquiry_awaiting_count }}</h3>
             <p>Awaiting response</p>
+        </div>
+    </div>
+
+    <div class="stats-card">
+        <div class="stats-icon purple">
+            <i class="fas fa-credit-card"></i>
+        </div>
+        <div class="stats-content">
+            <h3>{{ payment_count }}</h3>
+            <p>Total Payments</p>
+        </div>
+    </div>
+
+    <div class="stats-card">
+        <div class="stats-icon teal">
+            <i class="fas fa-dollar-sign"></i>
+        </div>
+        <div class="stats-content">
+            <h3>₹{{ earnings_this_month }}</h3>
+            <p>Earnings This Month</p>
         </div>
     </div>
 </div>
@@ -72,11 +92,14 @@
         <div class="admin-card">
             <h2 class="admin-card-title">Inquiry Status</h2>
             <div class="chart-container">
-                <canvas id="inquiryStatusChart" data-pending="{{ pending_count }}" data-contacted="{{ contacted_count }}" data-resolved="{{ resolved_count }}"></canvas>
+                <canvas id="inquiryStatusChart"
+                        data-pending="{{ pending_count }}"
+                        data-contacted="{{ contacted_count }}"
+                        data-resolved="{{ resolved_count }}"></canvas>
             </div>
         </div>
     </div>
-    
+
     <div class="col-md-6">
         <div class="admin-card">
             <h2 class="admin-card-title">Packages by Category</h2>
@@ -85,10 +108,21 @@
             </div>
         </div>
     </div>
+
+    <div class="col-md-12 mt-4">
+        <div class="admin-card">
+            <h2 class="admin-card-title">Monthly Earnings Overview</h2>
+            <div class="chart-container">
+                <canvas id="earningsChart"
+                        data-months="{{ monthly_labels|tojson }}"
+                        data-earnings="{{ monthly_earnings|tojson }}"></canvas>
+            </div>
+        </div>
+    </div>
 </div>
 
 <!-- Recent Activities -->
-<div class="recent-activity">
+<div class="recent-activity mt-4">
     <div class="row">
         <div class="col-md-6">
             <div class="activity-card">
@@ -121,7 +155,7 @@
                 </div>
             </div>
         </div>
-        
+
         <div class="col-md-6">
             <div class="activity-card">
                 <div class="activity-card-header">
@@ -132,23 +166,9 @@
                     {% if system_updates %}
                         {% for update in system_updates %}
                             <div class="activity-item">
-                                {% if update.type == 'package' %}
-                                    <div class="activity-icon orange">
-                                        <i class="fas fa-suitcase"></i>
-                                    </div>
-                                {% elif update.type == 'location' %}
-                                    <div class="activity-icon blue">
-                                        <i class="fas fa-map-marker-alt"></i>
-                                    </div>
-                                {% elif update.type == 'inquiry' %}
-                                    <div class="activity-icon yellow">
-                                        <i class="fas fa-envelope"></i>
-                                    </div>
-                                {% else %}
-                                    <div class="activity-icon green">
-                                        <i class="fas fa-info-circle"></i>
-                                    </div>
-                                {% endif %}
+                                <div class="activity-icon {{ 'orange' if update.type == 'package' else 'blue' if update.type == 'location' else 'yellow' if update.type == 'inquiry' else 'green' }}">
+                                    <i class="fas {{ 'fa-suitcase' if update.type == 'package' else 'fa-map-marker-alt' if update.type == 'location' else 'fa-envelope' if update.type == 'inquiry' else 'fa-info-circle' }}"></i>
+                                </div>
                                 <div class="activity-content">
                                     <div class="activity-message">{{ update.message }}</div>
                                     <div class="activity-time">{{ update.date.strftime('%d %b %Y, %H:%M') }}</div>
@@ -166,8 +186,44 @@
     </div>
 </div>
 
+<!-- Recent Payments -->
+<div class="admin-card mt-4">
+    <div class="activity-card-header">
+        <h3>Recent Payments</h3>
+        <a href="{{ url_for('admin.payments') }}" class="text-white">View All <i class="fas fa-arrow-right ms-1"></i></a>
+    </div>
+    <div class="activity-card-body">
+        {% if recent_payments %}
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>User</th>
+                            <th>Package</th>
+                            <th>Amount</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for payment in recent_payments %}
+                        <tr>
+                            <td>{{ payment.user.name }}</td>
+                            <td>{{ payment.package.title }}</td>
+                            <td>₹{{ payment.amount }}</td>
+                            <td>{{ payment.date.strftime('%d %b %Y, %H:%M') }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p class="text-center py-4">No recent payments</p>
+        {% endif %}
+    </div>
+</div>
+
 <!-- Quick Actions -->
-<div class="quick-actions">
+<div class="quick-actions mt-4">
     <h2 class="admin-card-title">Quick Actions</h2>
     <div class="row">
         <div class="col-md-2 col-sm-4 mb-3">
@@ -180,29 +236,29 @@
                 <a href="{{ url_for('admin.add_package') }}" class="stretched-link"></a>
             </div>
         </div>
-        
+
         <div class="col-md-2 col-sm-4 mb-3">
             <div class="action-card">
                 <div class="action-icon">
                     <i class="fas fa-map-pin"></i>
                 </div>
                 <h4>Add New Location</h4>
-                <p>Add a new destination to the system</p>
+                <p>Add a new destination</p>
                 <a href="{{ url_for('admin.add_location') }}" class="stretched-link"></a>
             </div>
         </div>
-        
+
         <div class="col-md-2 col-sm-4 mb-3">
             <div class="action-card">
                 <div class="action-icon">
                     <i class="fas fa-reply"></i>
                 </div>
                 <h4>Respond to Inquiries</h4>
-                <p>Handle pending customer requests</p>
+                <p>Handle customer requests</p>
                 <a href="{{ url_for('admin.inquiries') }}" class="stretched-link"></a>
             </div>
         </div>
-        
+
         <div class="col-md-2 col-sm-4 mb-3">
             <div class="action-card">
                 <div class="action-icon">
@@ -213,14 +269,14 @@
                 <a href="{{ url_for('admin.analytics') }}" class="stretched-link"></a>
             </div>
         </div>
-        
+
         <div class="col-md-2 col-sm-4 mb-3">
             <div class="action-card">
                 <div class="action-icon">
                     <i class="fas fa-cog"></i>
                 </div>
                 <h4>Settings</h4>
-                <p>Configure system preferences</p>
+                <p>Configure preferences</p>
                 <a href="#" class="stretched-link"></a>
             </div>
         </div>
