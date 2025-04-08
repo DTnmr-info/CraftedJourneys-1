@@ -45,6 +45,12 @@
                     </a>
                 </li>
                 <li>
+                    <a href="{{ url_for('admin.payments') }}" class="{% if request.endpoint == 'admin.packages' or request.endpoint == 'admin.add_package' or request.endpoint == 'admin.edit_package' %}active{% endif %}">
+                        <i class="fas fa-suitcase"></i>
+                        <span>Payments</span>
+                    </a>
+                </li>
+                <li>
                     <a href="{{ url_for('admin.inquiries') }}" class="{% if request.endpoint == 'admin.inquiries' %}active{% endif %}">
                         <i class="fas fa-envelope"></i>
                         <span>Inquiries</span>
