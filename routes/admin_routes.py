@@ -42,7 +42,7 @@ def dashboard():
     # Recent payments with eager loading of related packages
     recent_payments = (
         Payment.query
-        .options(joinedload(Payment.packages))
+        .options(joinedload(Payment.package))
         .order_by(Payment.created_at.desc())
         .limit(5)
         .all()
