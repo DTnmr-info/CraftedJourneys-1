@@ -4,6 +4,7 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import DeclarativeBase
 from flask_login import LoginManager
+from payment_routes import payment
 
 # Set up logging
 logging.basicConfig(level=logging.DEBUG)
@@ -36,17 +37,31 @@ login_manager.login_message_category = 'info'
 
 # Import models and create tables
 with app.app_context():
-    from models import User, Package, Location, Inquiry, Image
+    from models import User, Package, Location, Inquiry, Image, Payment
     db.create_all()
 
 # Register blueprints
 from routes.main_routes import main_bp
 from routes.auth_routes import auth_bp
+from payment_routes import payment
 from routes.admin_routes import admin_bp
 
 app.register_blueprint(main_bp)
 app.register_blueprint(auth_bp)
-app.register_blueprint(admin_bp)
+app.register_blueprint(admin_bp, url_prefix='/admin')
+app.register_blueprint(payment, url_prefix='/payment')
+# Error handlers
+    @app.errorhandler(403)
+    def forbidden(e):
+        return render_template('errors/403.html'), 403
+    
+    @app.errorhandler(404)
+    def page_not_found(e):
+        return render_template('errors/404.html'), 404
+    
+    @app.errorhandler(500)
+    def internal_server_error(e):
+        return render_template('errors/500.html'), 500
 
 # Setup login manager loader
 @login_manager.user_loader
