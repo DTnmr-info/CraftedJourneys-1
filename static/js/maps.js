@@ -56,7 +56,13 @@ document.addEventListener('DOMContentLoaded', function() {
         try {
             let locations = [];
             if (locationsMap.dataset.locations) {
-                locations = JSON.parse(locationsMap.dataset.locations);
+                locations.forEach(location => {
+                    if (location.latitude && location.longitude) {
+                      L.marker([location.latitude, location.longitude])
+                        .addTo(map)
+                        .bindPopup(`<b>${location.name}</b><br>${location.region}<br><a href='${url_for('main.location_detail', { location_id: location.id })}'>View Details</a>`);
+                    }
+                  });
             }
             
             // If no locations in database, use default regions
