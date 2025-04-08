@@ -312,27 +312,27 @@ def delete_location(location_id):
 @login_required
 def inquiries():
     status_filter = request.args.get('status', 'all')
-
+    
     if status_filter == 'all':
         inquiries = Inquiry.query.order_by(Inquiry.created_at.desc()).all()
     else:
         inquiries = Inquiry.query.filter_by(status=status_filter).order_by(Inquiry.created_at.desc()).all()
-
+    
     return render_template('admin/inquiries.html', inquiries=inquiries, status_filter=status_filter)
 
 @admin_bp.route('/inquiries/update-status/<int:inquiry_id>/<status>', methods=['POST'])
 @login_required
 def update_inquiry_status(inquiry_id, status):
     inquiry = Inquiry.query.get_or_404(inquiry_id)
-
+    
     if status in ['Pending', 'Contacted', 'Resolved']:
         inquiry.status = status
         db.session.commit()
         flash('Inquiry status updated successfully!', 'success')
     else:
         flash('Invalid status value!', 'danger')
-
-    return redirect(url_for('admin_bp.inquiries'))  # Use admin_bp
+    
+    return redirect(url_for('admin.inquiries'))
 
 @admin_bp.route('/images')
 @login_required
@@ -392,10 +392,35 @@ def analytics():
     pending_count = Inquiry.query.filter_by(status='Pending').count()
     contacted_count = Inquiry.query.filter_by(status='Contacted').count()
     resolved_count = Inquiry.query.filter_by(status='Resolved').count()
-
+    
     # Get package counts by category
     categories = db.session.query(Package.category).distinct().all()
     category_counts = []
-
+    
     for category in categories:
-        count = Package.query.filter
+        count = Package.query.filter_by(category=category[0]).count()
+        category_counts.append({
+            'category': category[0],
+            'count': count
+        })
+    
+    # Get most popular packages
+    popular_packages = Package.query.limit(5).all()  # In a real app, this would be based on actual stats
+    
+    # Inquiry sources (mockup data for this demo)
+    inquiry_sources = [
+        {'source': 'Website', 'count': 45},
+        {'source': 'Social Media', 'count': 30},
+        {'source': 'Referral', 'count': 15},
+        {'source': 'Email', 'count': 10}
+    ]
+    
+    return render_template(
+        'admin/analytics.html',
+        pending_count=pending_count,
+        contacted_count=contacted_count,
+        resolved_count=resolved_count,
+        category_counts=category_counts,
+        popular_packages=popular_packages,
+        inquiry_sources=inquiry_sources
+    )
