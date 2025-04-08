@@ -90,7 +90,7 @@ class Payment(db.Model):
     stripe_session_id = db.Column(db.String(100))
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
-    package = db.relationship('Package', backref=db.backref('payments', lazy='dynamic'))  # ✅ clean and consistent
+    package = db.relationship('Package', backref=db.backref('payments', lazy='dynamic'))
 
 
 
