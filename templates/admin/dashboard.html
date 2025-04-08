@@ -104,7 +104,7 @@
         <div class="admin-card">
             <h2 class="admin-card-title">Packages by Category</h2>
             <div class="chart-container">
-                <canvas id="packagesCategoryChart" data-categories="{{ package_count|tojson }}"></canvas>
+                <canvas id="packagesCategoryChart" data-categories="{{ package_count }}"></canvas>
             </div>
         </div>
     </div>
@@ -114,8 +114,8 @@
             <h2 class="admin-card-title">Monthly Earnings Overview</h2>
             <div class="chart-container">
                 <canvas id="earningsChart"
-                        data-months="{{ monthly_labels|tojson }}"
-                        data-earnings="{{ monthly_earnings|tojson }}"></canvas>
+                        data-months="{{ monthly_labels }}"
+                        data-earnings="{{ monthly_earnings }}"></canvas>
             </div>
         </div>
     </div>
