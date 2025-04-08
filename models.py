@@ -37,7 +37,7 @@ class Package(db.Model):
     # Relationships
     location = db.relationship('Location', backref='packages')
      # Relationships
-    payments = db.relationship('Payment', backref='package', lazy='dynamic')
+    payments = db.relationship('Payment', lazy='dynamic')
     
     def __repr__(self):
         return f'<Package {self.name}>'
