@@ -10,6 +10,9 @@ class User(UserMixin, db.Model):
     password_hash = db.Column(db.String(256), nullable=False)
     is_admin = db.Column(db.Boolean, default=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+     # Relationships
+    payments = db.relationship('Payment', backref='user', lazy='dynamic')
     
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
@@ -33,6 +36,8 @@ class Package(db.Model):
     
     # Relationships
     location = db.relationship('Location', backref='packages')
+     # Relationships
+    payments = db.relationship('Payment', backref='package', lazy='dynamic')
     
     def __repr__(self):
         return f'<Package {self.name}>'
@@ -46,6 +51,9 @@ class Location(db.Model):
     longitude = db.Column(db.Float, nullable=False)
     featured_image = db.Column(db.String(255))
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    # Relationships
+    packages = db.relationship('Package', backref='location', lazy='dynamic')
     
     def __repr__(self):
         return f'<Location {self.name}>'
@@ -72,3 +80,27 @@ class Image(db.Model):
     
     def __repr__(self):
         return f'<Image {self.id} - {self.category}>'
+
+
+class Payment(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    package_id = db.Column(db.Integer, db.ForeignKey('package.id'), nullable=False)
+    amount = db.Column(db.Float, nullable=False)
+    currency = db.Column(db.String(3), default='INR')
+    status = db.Column(db.String(20), nullable=False, default='pending')
+    stripe_payment_id = db.Column(db.String(100))
+    stripe_session_id = db.Column(db.String(100))
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    def __repr__(self):
+        return f'<Payment {self.id} - {self.status}>'
+    
+    def formatted_amount(self):
+        """Return the amount formatted as a currency string"""
+        return f"₹{self.amount:,.2f}"
+    
+    def formatted_date(self):
+        """Return formatted date string"""
+        return self.created_at.strftime("%d %b, %Y")
+
