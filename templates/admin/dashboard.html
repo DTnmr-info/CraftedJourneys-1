@@ -208,7 +208,7 @@
                         {% for payment in recent_payments %}
                         <tr>
                             <td>{{ payment.user.name }}</td>
-                            <td>{{ payment.package.title }}</td>
+                            <td>{{ payment.package.name }}</td>
                             <td>₹{{ payment.amount }}</td>
                             <td>{{ payment.date.strftime('%d %b %Y, %H:%M') }}</td>
                         </tr>
