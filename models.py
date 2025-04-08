@@ -89,6 +89,8 @@ class Payment(db.Model):
     stripe_payment_id = db.Column(db.String(100))
     stripe_session_id = db.Column(db.String(100))
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    package = db.relationship('Package', backref='payments')
 
     def __repr__(self):
         return f'<Payment {self.id} - {self.status}>'
