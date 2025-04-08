@@ -51,9 +51,6 @@ class Location(db.Model):
     longitude = db.Column(db.Float, nullable=False)
     featured_image = db.Column(db.String(255))
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
-
-    # Relationships
-    packages = db.relationship('Package', backref='location', lazy='dynamic')
     
     def __repr__(self):
         return f'<Location {self.name}>'
@@ -92,6 +89,9 @@ class Payment(db.Model):
     stripe_payment_id = db.Column(db.String(100))
     stripe_session_id = db.Column(db.String(100))
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    location = db.relationship('Location', backref=db.backref('packages', lazy='dynamic'))
+
     
     def __repr__(self):
         return f'<Payment {self.id} - {self.status}>'
