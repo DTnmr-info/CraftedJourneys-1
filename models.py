@@ -35,9 +35,7 @@ class Package(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     
     # Relationships
-    location = db.relationship('Location', backref='packages')
-     # Relationships
-    payments = db.relationship('Payment', backref='packages', lazy='dynamic')
+    location = db.relationship('Location', backref='packages')\
     
     def __repr__(self):
         return f'<Package {self.name}>'
@@ -92,9 +90,10 @@ class Payment(db.Model):
     stripe_session_id = db.Column(db.String(100))
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
-    # Add this relationship
-    package = relationship('Package', backref='payments')
-    
+    package = db.relationship('Package', backref=db.backref('payments', lazy='dynamic'))  # ✅ clean and consistent
+
+
+
     def __repr__(self):
         return f'<Payment {self.id} - {self.status}>'
 
@@ -105,4 +104,3 @@ class Payment(db.Model):
     def formatted_date(self):
         """Return formatted date string"""
         return self.created_at.strftime("%d %b, %Y")
-        
