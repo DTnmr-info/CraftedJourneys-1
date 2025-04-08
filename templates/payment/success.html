@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+
+{% block title %}Payment Successful - Crafted Journeys{% endblock %}
+
+{% block content %}
+<div class="container py-5 mt-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      <div class="card border-success mb-4 shadow-sm">
+        <div class="card-body text-center py-5">
+          <div class="mb-4">
+            <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-success">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+              <polyline points="22 4 12 14.01 9 11.01"></polyline>
+            </svg>
+          </div>
+          <h1 class="display-5 fw-bold text-success mb-3">Payment Successful!</h1>
+          <p class="lead mb-4">Thank you for your booking with Crafted Journeys. Your transaction has been processed successfully.</p>
+          
+          <div class="payment-details p-4 mb-4 bg-light rounded">
+            <div class="row text-start">
+              <div class="col-md-6 mb-3">
+                <h5>Transaction Details</h5>
+                <p class="mb-1"><strong>Transaction ID:</strong> {{ payment.stripe_payment_id }}</p>
+                <p class="mb-1"><strong>Date:</strong> {{ payment.formatted_date() }}</p>
+                <p class="mb-1"><strong>Amount:</strong> {{ payment.formatted_amount() }}</p>
+                <p class="mb-0"><strong>Status:</strong> <span class="badge bg-success">Confirmed</span></p>
+              </div>
+              <div class="col-md-6 mb-3">
+                <h5>Package Information</h5>
+                <p class="mb-1"><strong>Package:</strong> {{ payment.package.name }}</p>
+                <p class="mb-1"><strong>Destination:</strong> {{ payment.package.location.name }}</p>
+                <p class="mb-0"><strong>Travel Date:</strong> <span class="text-primary">Your booking is confirmed</span></p>
+              </div>
+            </div>
+          </div>
+          
+          <p class="mb-4">A confirmation email has been sent to your registered email address with all the details of your booking.</p>
+          
+          <div class="d-grid gap-3 d-sm-flex justify-content-sm-center">
+            <a href="{{ url_for('payment.download_receipt', payment_id=payment.id) }}" class="btn btn-outline-success btn-lg px-4 gap-3">
+              <i class="fas fa-download me-2"></i> Download Receipt
+            </a>
+            <a href="{{ url_for('payment.history') }}" class="btn btn-outline-primary btn-lg px-4">
+              <i class="fas fa-history me-2"></i> View My Bookings
+            </a>
+          </div>
+        </div>
+      </div>
+      
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h4 class="card-title mb-3">What's Next?</h4>
+          <p class="card-text">Our team will be in touch with you shortly to provide more details about your upcoming journey. Here's what you can expect:</p>
+          
+          <ul class="list-group list-group-flush mb-3">
+            <li class="list-group-item bg-transparent">
+              <i class="fas fa-envelope text-primary me-2"></i> Detailed itinerary will be sent to your email
+            </li>
+            <li class="list-group-item bg-transparent">
+              <i class="fas fa-phone text-primary me-2"></i> A personal travel coordinator will call you within 24 hours
+            </li>
+            <li class="list-group-item bg-transparent">
+              <i class="fas fa-file-alt text-primary me-2"></i> You'll receive all necessary travel documents digitally
+            </li>
+            <li class="list-group-item bg-transparent">
+              <i class="fas fa-info-circle text-primary me-2"></i> Access to pre-travel destination information and tips
+            </li>
+          </ul>
+          
+          <p class="card-text mb-0">If you have any questions, feel free to <a href="{{ url_for('main.contact') }}">contact our support team</a>.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

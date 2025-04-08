@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block title %}Page Not Found - Crafted Journeys{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 text-center">
+            <div class="error-container py-5">
+                <svg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-info mb-4">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+                    <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                </svg>
+                <h1 class="display-1 fw-bold text-info">404</h1>
+                <h2 class="mb-4">Page Not Found</h2>
+                <p class="lead mb-5">Sorry, the page you're looking for doesn't exist or has been moved.</p>
+                <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+                    <a href="{{ url_for('main.index') }}" class="btn btn-primary btn-lg px-4 gap-3">
+                        <i class="fas fa-home me-2"></i> Back to Home
+                    </a>
+                    <a href="{{ url_for('main.packages') }}" class="btn btn-outline-secondary btn-lg px-4">
+                        <i class="fas fa-suitcase me-2"></i> Explore Packages
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

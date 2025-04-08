@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+
+{% block title %}Confirm Payment - Crafted Journeys{% endblock %}
+
+{% block content %}
+<div class="container py-5 mt-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      <div class="card mb-4 shadow-sm">
+        <div class="card-header py-3 bg-dark">
+          <h4 class="mb-0 text-white">Confirm Your Booking</h4>
+        </div>
+        <div class="card-body py-4">
+          <div class="mb-4">
+            <h5 class="mb-3">Booking Details</h5>
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <p class="mb-1"><strong>Package:</strong></p>
+                <p class="fs-5">{{ payment.package.name }}</p>
+              </div>
+              <div class="col-md-6 mb-3">
+                <p class="mb-1"><strong>Destination:</strong></p>
+                <p>{{ payment.package.location.name }}, {{ payment.package.location.region }}</p>
+              </div>
+              <div class="col-md-6 mb-3">
+                <p class="mb-1"><strong>Duration:</strong></p>
+                <p>{{ payment.package.duration }} days</p>
+              </div>
+              <div class="col-md-6 mb-3">
+                <p class="mb-1"><strong>Category:</strong></p>
+                <p>{{ payment.package.category }}</p>
+              </div>
+            </div>
+          </div>
+          
+          <hr class="my-4">
+          
+          <div class="mb-4">
+            <h5 class="mb-3">Payment Summary</h5>
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <p class="mb-1"><strong>Payment ID:</strong></p>
+                <p>{{ payment.id }}</p>
+              </div>
+              <div class="col-md-6 mb-3">
+                <p class="mb-1"><strong>Date:</strong></p>
+                <p>{{ payment.formatted_date() }}</p>
+              </div>
+              <div class="col-12">
+                <table class="table table-bordered">
+                  <tbody>
+                    <tr>
+                      <th>Package Price</th>
+                      <td class="text-end">₹{{ "%.2f"|format(payment.amount / 1.18) }}</td>
+                    </tr>
+                    <tr>
+                      <th>GST (18%)</th>
+                      <td class="text-end">₹{{ "%.2f"|format(payment.amount * 0.18 / 1.18) }}</td>
+                    </tr>
+                    <tr class="table-active">
+                      <th>Total Amount</th>
+                      <td class="text-end fw-bold">{{ payment.formatted_amount() }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          
+          <div class="alert alert-info">
+            <div class="d-flex">
+              <i class="fas fa-info-circle fs-4 me-3 mt-1"></i>
+              <div>
+                <p class="mb-1"><strong>Demo Mode Information</strong></p>
+                <p class="mb-0">This is running in demo mode. No real payment will be processed and no credit card information is required. Click the button below to simulate a successful payment.</p>
+              </div>
+            </div>
+          </div>
+          
+          <div class="d-grid gap-3 d-md-flex justify-content-md-end mt-4">
+            <a href="{{ url_for('payment.history') }}" class="btn btn-outline-secondary">
+              Cancel
+            </a>
+            <a href="{{ url_for('payment.checkout_session', payment_id=payment.id) }}" class="btn btn-primary btn-lg">
+              <i class="fas fa-credit-card me-2"></i> Proceed to Payment
+            </a>
+          </div>
+        </div>
+      </div>
+      
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title mb-3">Payment Security</h5>
+          <p class="card-text mb-4">Your payment information is secure with us. We use industry-standard encryption to protect your sensitive data.</p>
+          
+          <div class="row text-center">
+            <div class="col-4">
+              <div class="mb-2">
+                <i class="fas fa-lock fs-3 text-primary"></i>
+              </div>
+              <p class="small mb-0">Secure Payment</p>
+            </div>
+            <div class="col-4">
+              <div class="mb-2">
+                <i class="fas fa-shield-alt fs-3 text-primary"></i>
+              </div>
+              <p class="small mb-0">Data Protection</p>
+            </div>
+            <div class="col-4">
+              <div class="mb-2">
+                <i class="fas fa-undo-alt fs-3 text-primary"></i>
+              </div>
+              <p class="small mb-0">Refund Policy</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

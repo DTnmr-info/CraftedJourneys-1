@@ -1,0 +1,152 @@
+{% extends 'base.html' %}
+
+{% block title %}My Bookings - Crafted Journeys{% endblock %}
+
+{% block extra_styles %}
+<style>
+  .booking-card {
+    transition: transform 0.3s ease;
+  }
+  .booking-card:hover {
+    transform: translateY(-5px);
+  }
+  .status-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-5 mt-5">
+  <div class="row mb-4">
+    <div class="col-12">
+      <h1 class="fw-bold mb-4">My Bookings</h1>
+      <p class="lead mb-4">View and manage all your travel bookings with Crafted Journeys.</p>
+    </div>
+  </div>
+  
+  {% if payments|length > 0 %}
+    <div class="row g-4">
+      {% for payment in payments %}
+        <div class="col-md-6 col-lg-4">
+          <div class="card booking-card h-100 shadow-sm">
+            {% if payment.status == 'completed' %}
+              <div class="status-badge">
+                <span class="badge rounded-pill bg-success px-3 py-2">Confirmed</span>
+              </div>
+            {% elif payment.status == 'pending' %}
+              <div class="status-badge">
+                <span class="badge rounded-pill bg-warning text-dark px-3 py-2">Pending</span>
+              </div>
+            {% else %}
+              <div class="status-badge">
+                <span class="badge rounded-pill bg-secondary px-3 py-2">{{ payment.status|capitalize }}</span>
+              </div>
+            {% endif %}
+            
+            {% if payment.package.featured_image %}
+              <img src="{{ payment.package.featured_image }}" class="card-img-top" alt="{{ payment.package.name }}" style="height: 180px; object-fit: cover;">
+            {% else %}
+              <img src="{{ url_for('static', filename='images/default-package.jpg') }}" class="card-img-top" alt="{{ payment.package.name }}" style="height: 180px; object-fit: cover;">
+            {% endif %}
+            
+            <div class="card-body">
+              <h5 class="card-title">{{ payment.package.name }}</h5>
+              <p class="card-text text-muted mb-3">{{ payment.package.location.name }}, {{ payment.package.location.region }}</p>
+              
+              <div class="mb-3">
+                <div class="d-flex justify-content-between">
+                  <span><i class="fas fa-calendar-alt me-2 text-primary"></i> Date:</span>
+                  <span>{{ payment.formatted_date() }}</span>
+                </div>
+                <div class="d-flex justify-content-between">
+                  <span><i class="fas fa-rupee-sign me-2 text-primary"></i> Amount:</span>
+                  <span>{{ payment.formatted_amount() }}</span>
+                </div>
+                <div class="d-flex justify-content-between">
+                  <span><i class="fas fa-tag me-2 text-primary"></i> Transaction ID:</span>
+                  <span class="text-truncate" style="max-width: 140px;">{{ payment.stripe_payment_id }}</span>
+                </div>
+              </div>
+            </div>
+            
+            <div class="card-footer bg-transparent">
+              <div class="d-grid gap-2">
+                {% if payment.status == 'completed' %}
+                  <a href="{{ url_for('payment.download_receipt', payment_id=payment.id) }}" class="btn btn-outline-primary">
+                    <i class="fas fa-download me-2"></i> Download Receipt
+                  </a>
+                {% elif payment.status == 'pending' %}
+                  <a href="{{ url_for('payment.checkout_session', payment_id=payment.id) }}" class="btn btn-primary">
+                    <i class="fas fa-credit-card me-2"></i> Complete Payment
+                  </a>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="row">
+      <div class="col-md-8 mx-auto">
+        <div class="card shadow-sm">
+          <div class="card-body text-center py-5">
+            <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-muted mb-4">
+              <circle cx="12" cy="12" r="10"></circle>
+              <path d="M8 15h8M9 9h.01M15 9h.01"></path>
+            </svg>
+            <h3 class="mb-3">No Bookings Found</h3>
+            <p class="text-muted mb-4">You haven't made any bookings yet. Explore our packages and start your journey today!</p>
+            <a href="{{ url_for('main.packages') }}" class="btn btn-primary btn-lg">
+              <i class="fas fa-suitcase me-2"></i> Explore Packages
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  {% endif %}
+  
+  <div class="row mt-5">
+    <div class="col-12">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h4 class="card-title mb-3">Need Assistance with Your Booking?</h4>
+          <p class="card-text">Our customer support team is available to help you with any questions or changes to your booking.</p>
+          <div class="row g-4">
+            <div class="col-md-4">
+              <div class="d-flex align-items-center">
+                <i class="fas fa-phone-alt text-primary fs-3 me-3"></i>
+                <div>
+                  <h6 class="mb-1">Call Us</h6>
+                  <p class="mb-0">+91 1234567890</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="d-flex align-items-center">
+                <i class="fas fa-envelope text-primary fs-3 me-3"></i>
+                <div>
+                  <h6 class="mb-1">Email Us</h6>
+                  <p class="mb-0">support@craftedjourneys.com</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="d-flex align-items-center">
+                <i class="fas fa-comments text-primary fs-3 me-3"></i>
+                <div>
+                  <h6 class="mb-1">Live Chat</h6>
+                  <p class="mb-0">Available 9 AM - 6 PM</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,380 @@
+{% extends 'base.html' %}
+
+{% block title %}Payment Records - Admin Dashboard - Crafted Journeys{% endblock %}
+
+{% block extra_styles %}
+<style>
+  .table-responsive {
+    overflow-x: auto;
+  }
+  .status-completed {
+    color: #28a745;
+  }
+  .status-pending {
+    color: #ffc107;
+  }
+  .status-cancelled, .status-failed {
+    color: #dc3545;
+  }
+  .btn-action {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+  }
+  .btn-action i {
+    font-size: 0.875rem;
+  }
+  #paymentSearchInput {
+    max-width: 300px;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-5 mt-5">
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="d-sm-flex align-items-center justify-content-between">
+        <div>
+          <h1 class="h2 mb-2">Payment Records</h1>
+          <p class="text-muted">Manage and track all payment transactions</p>
+        </div>
+        <a href="{{ url_for('admin.dashboard') }}" class="btn btn-outline-primary">
+          <i class="fas fa-arrow-left me-2"></i> Back to Dashboard
+        </a>
+      </div>
+    </div>
+  </div>
+  
+  <div class="row">
+    <div class="col-12">
+      <div class="card shadow-sm mb-4">
+        <div class="card-header py-3 bg-dark">
+          <div class="d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">All Transactions</h5>
+            <div class="d-flex">
+              <input type="text" id="paymentSearchInput" class="form-control form-control-sm me-2" placeholder="Search payments...">
+              <div class="dropdown">
+                <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" id="filterDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                  <i class="fas fa-filter me-1"></i> Filter
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="filterDropdown">
+                  <li><a class="dropdown-item filter-status" href="#" data-status="all">All Status</a></li>
+                  <li><hr class="dropdown-divider"></li>
+                  <li><a class="dropdown-item filter-status" href="#" data-status="completed">Completed</a></li>
+                  <li><a class="dropdown-item filter-status" href="#" data-status="pending">Pending</a></li>
+                  <li><a class="dropdown-item filter-status" href="#" data-status="cancelled">Cancelled</a></li>
+                  <li><a class="dropdown-item filter-status" href="#" data-status="failed">Failed</a></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card-body p-0">
+          <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0" id="paymentsTable">
+              <thead class="table-light">
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col">Transaction ID</th>
+                  <th scope="col">User</th>
+                  <th scope="col">Package</th>
+                  <th scope="col">Amount</th>
+                  <th scope="col">Date</th>
+                  <th scope="col">Status</th>
+                  <th scope="col" class="text-end">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% if payments|length > 0 %}
+                  {% for payment in payments %}
+                    <tr class="payment-row" data-status="{{ payment.status }}">
+                      <td>{{ payment.id }}</td>
+                      <td><span class="text-truncate d-inline-block" style="max-width: 150px;">{{ payment.stripe_payment_id or 'N/A' }}</span></td>
+                      <td>{{ payment.user.username }}</td>
+                      <td>{{ payment.package.name }}</td>
+                      <td>{{ payment.formatted_amount() }}</td>
+                      <td>{{ payment.formatted_date() }}</td>
+                      <td>
+                        {% if payment.status == 'completed' %}
+                          <span class="badge bg-success">Completed</span>
+                        {% elif payment.status == 'pending' %}
+                          <span class="badge bg-warning text-dark">Pending</span>
+                        {% elif payment.status == 'cancelled' %}
+                          <span class="badge bg-secondary">Cancelled</span>
+                        {% elif payment.status == 'failed' %}
+                          <span class="badge bg-danger">Failed</span>
+                        {% else %}
+                          <span class="badge bg-info">{{ payment.status|capitalize }}</span>
+                        {% endif %}
+                      </td>
+                      <td class="text-end">
+                        <div class="btn-group">
+                          <a href="{{ url_for('payment.download_receipt', payment_id=payment.id) }}" class="btn btn-sm btn-outline-primary btn-action" title="Download Receipt">
+                            <i class="fas fa-download"></i>
+                          </a>
+                          <button type="button" class="btn btn-sm btn-outline-secondary btn-action" data-bs-toggle="modal" data-bs-target="#paymentModal{{ payment.id }}" title="View Details">
+                            <i class="fas fa-eye"></i>
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                    
+                    <!-- Payment Detail Modal -->
+                    <div class="modal fade" id="paymentModal{{ payment.id }}" tabindex="-1" aria-labelledby="paymentModalLabel{{ payment.id }}" aria-hidden="true">
+                      <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h5 class="modal-title" id="paymentModalLabel{{ payment.id }}">Payment Details #{{ payment.id }}</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                          </div>
+                          <div class="modal-body">
+                            <div class="row">
+                              <div class="col-md-6">
+                                <h6 class="text-muted mb-3">Transaction Information</h6>
+                                <div class="mb-3">
+                                  <p class="mb-1"><strong>Transaction ID:</strong></p>
+                                  <p class="text-break">{{ payment.stripe_payment_id or 'Not available' }}</p>
+                                </div>
+                                <div class="mb-3">
+                                  <p class="mb-1"><strong>Session ID:</strong></p>
+                                  <p class="text-break">{{ payment.stripe_session_id or 'Not available' }}</p>
+                                </div>
+                                <div class="mb-3">
+                                  <p class="mb-1"><strong>Date:</strong></p>
+                                  <p>{{ payment.formatted_date() }}</p>
+                                </div>
+                                <div class="mb-3">
+                                  <p class="mb-1"><strong>Status:</strong></p>
+                                  <p>
+                                    {% if payment.status == 'completed' %}
+                                      <span class="badge bg-success">Completed</span>
+                                    {% elif payment.status == 'pending' %}
+                                      <span class="badge bg-warning text-dark">Pending</span>
+                                    {% elif payment.status == 'cancelled' %}
+                                      <span class="badge bg-secondary">Cancelled</span>
+                                    {% elif payment.status == 'failed' %}
+                                      <span class="badge bg-danger">Failed</span>
+                                    {% else %}
+                                      <span class="badge bg-info">{{ payment.status|capitalize }}</span>
+                                    {% endif %}
+                                  </p>
+                                </div>
+                                <div class="mb-3">
+                                  <p class="mb-1"><strong>Amount:</strong></p>
+                                  <p class="h5">{{ payment.formatted_amount() }}</p>
+                                </div>
+                              </div>
+                              <div class="col-md-6">
+                                <h6 class="text-muted mb-3">Customer Information</h6>
+                                <div class="mb-3">
+                                  <p class="mb-1"><strong>User:</strong></p>
+                                  <p>{{ payment.user.username }}</p>
+                                </div>
+                                <div class="mb-3">
+                                  <p class="mb-1"><strong>Email:</strong></p>
+                                  <p>{{ payment.user.email }}</p>
+                                </div>
+                                <h6 class="text-muted mt-4 mb-3">Package Information</h6>
+                                <div class="mb-3">
+                                  <p class="mb-1"><strong>Package:</strong></p>
+                                  <p>{{ payment.package.name }}</p>
+                                </div>
+                                <div class="mb-3">
+                                  <p class="mb-1"><strong>Destination:</strong></p>
+                                  <p>{{ payment.package.location.name }}</p>
+                                </div>
+                                <div class="mb-3">
+                                  <p class="mb-1"><strong>Duration:</strong></p>
+                                  <p>{{ payment.package.duration }} days</p>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="modal-footer">
+                            <a href="{{ url_for('payment.download_receipt', payment_id=payment.id) }}" class="btn btn-primary">
+                              <i class="fas fa-download me-2"></i> Download Receipt
+                            </a>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  {% endfor %}
+                {% else %}
+                  <tr>
+                    <td colspan="8" class="text-center py-5">
+                      <div class="py-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-muted mb-3">
+                          <rect x="2" y="5" width="20" height="14" rx="2"></rect>
+                          <line x1="2" y1="10" x2="22" y2="10"></line>
+                        </svg>
+                        <h6 class="mb-2">No Payment Records Found</h6>
+                        <p class="text-muted">There are no payment transactions in the system yet.</p>
+                      </div>
+                    </td>
+                  </tr>
+                {% endif %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="card-footer py-3">
+          <div class="d-flex justify-content-between align-items-center">
+            <span class="text-muted small">Showing {{ payments|length }} payment records</span>
+            <a href="{{ url_for('payment.download_receipt', payment_id='all') }}" class="btn btn-sm btn-outline-secondary">
+              <i class="fas fa-file-export me-1"></i> Export All
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="row">
+    <div class="col-md-6 mb-4">
+      <div class="card shadow-sm h-100">
+        <div class="card-header py-3 bg-dark">
+          <h5 class="mb-0">Payment Statistics</h5>
+        </div>
+        <div class="card-body">
+          <div class="row text-center">
+            <div class="col-6 col-md-3 mb-3">
+              <div class="p-3">
+                <h2 class="mb-1">{{ total_payments }}</h2>
+                <p class="text-muted mb-0">Total</p>
+              </div>
+            </div>
+            <div class="col-6 col-md-3 mb-3">
+              <div class="p-3">
+                <h2 class="mb-1 text-success">{{ completed_payments }}</h2>
+                <p class="text-muted mb-0">Completed</p>
+              </div>
+            </div>
+            <div class="col-6 col-md-3 mb-3">
+              <div class="p-3">
+                <h2 class="mb-1 text-warning">{{ pending_payments }}</h2>
+                <p class="text-muted mb-0">Pending</p>
+              </div>
+            </div>
+            <div class="col-6 col-md-3 mb-3">
+              <div class="p-3">
+                <h2 class="mb-1 text-danger">{{ cancelled_payments }}</h2>
+                <p class="text-muted mb-0">Cancelled</p>
+              </div>
+            </div>
+          </div>
+          
+          <hr>
+          
+          <div class="mb-3">
+            <h6>Total Revenue</h6>
+            <h3 class="text-primary">₹{{ "%.2f"|format(total_revenue) }}</h3>
+          </div>
+          
+          <div class="mb-0">
+            <h6>Most Popular Package</h6>
+            {% if popular_package %}
+              <p class="mb-0">{{ popular_package.name }} ({{ popular_package_count }} bookings)</p>
+            {% else %}
+              <p class="text-muted mb-0">No data available</p>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-md-6 mb-4">
+      <div class="card shadow-sm h-100">
+        <div class="card-header py-3 bg-dark">
+          <h5 class="mb-0">Recent Activity</h5>
+        </div>
+        <div class="card-body">
+          {% if recent_payments|length > 0 %}
+            <div class="list-group list-group-flush">
+              {% for payment in recent_payments %}
+                <div class="list-group-item bg-transparent px-0">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                      <p class="mb-1">
+                        {% if payment.status == 'completed' %}
+                          <span class="badge bg-success me-2">Completed</span>
+                        {% elif payment.status == 'pending' %}
+                          <span class="badge bg-warning text-dark me-2">Pending</span>
+                        {% elif payment.status == 'cancelled' %}
+                          <span class="badge bg-secondary me-2">Cancelled</span>
+                        {% elif payment.status == 'failed' %}
+                          <span class="badge bg-danger me-2">Failed</span>
+                        {% else %}
+                          <span class="badge bg-info me-2">{{ payment.status|capitalize }}</span>
+                        {% endif %}
+                        <strong>{{ payment.user.username }}</strong> booked <strong>{{ payment.package.name }}</strong>
+                      </p>
+                      <p class="text-muted mb-0 small">{{ payment.formatted_amount() }} • {{ payment.formatted_date() }}</p>
+                    </div>
+                    <a href="{{ url_for('payment.download_receipt', payment_id=payment.id) }}" class="btn btn-sm btn-outline-primary btn-action">
+                      <i class="fas fa-download"></i>
+                    </a>
+                  </div>
+                </div>
+              {% endfor %}
+            </div>
+          {% else %}
+            <div class="text-center py-5">
+              <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-muted mb-3">
+                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+              </svg>
+              <h6 class="mb-2">No Recent Activity</h6>
+              <p class="text-muted">There are no recent payment transactions.</p>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Payment search functionality
+    const searchInput = document.getElementById('paymentSearchInput');
+    const paymentRows = document.querySelectorAll('.payment-row');
+    
+    searchInput.addEventListener('keyup', function() {
+      const searchTerm = this.value.toLowerCase();
+      
+      paymentRows.forEach(row => {
+        const rowText = row.textContent.toLowerCase();
+        if (rowText.includes(searchTerm)) {
+          row.style.display = '';
+        } else {
+          row.style.display = 'none';
+        }
+      });
+    });
+    
+    // Payment status filter
+    const filterButtons = document.querySelectorAll('.filter-status');
+    
+    filterButtons.forEach(button => {
+      button.addEventListener('click', function(e) {
+        e.preventDefault();
+        const status = this.getAttribute('data-status');
+        
+        paymentRows.forEach(row => {
+          if (status === 'all' || row.getAttribute('data-status') === status) {
+            row.style.display = '';
+          } else {
+            row.style.display = 'none';
+          }
+        });
+        
+        // Update dropdown button text
+        document.getElementById('filterDropdown').innerHTML = 
+          `<i class="fas fa-filter me-1"></i> ${status.charAt(0).toUpperCase() + status.slice(1)}`;
+      });
+    });
+  });
+</script>
+{% endblock %}
