@@ -35,7 +35,7 @@ class Package(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     
     # Relationships
-    location = db.relationship('Location', backref='packages')\
+    location = db.relationship('Location', backref='package')\
     
     def __repr__(self):
         return f'<Package {self.name}>'
