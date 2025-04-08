@@ -1,6 +1,6 @@
 import os
 from datetime import datetime
-from flask import Blueprint, render_template, redirect, url_for, flash, abort, send_file
+from flask import Blueprint, render_template, redirect, url_for, flash, abort, send_file, request
 from flask_login import login_required, current_user
 from app import db
 from models import User, Package, Payment, Location, Inquiry, Image  # Ensure Image is imported
@@ -332,7 +332,7 @@ def update_inquiry_status(inquiry_id, status):
     else:
         flash('Invalid status value!', 'danger')
     
-    return redirect(url_for('admin.inquiries'))
+    return redirect(url_for('admin_bp.inquiries'))
 
 @admin_bp.route('/images')
 @login_required
