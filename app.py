@@ -42,7 +42,7 @@ login_manager.login_message_category = 'info'
 # --- Register Blueprints ---
 from routes.main_routes import main_bp
 from routes.auth_routes import auth_bp
-from payment_routes import payment
+from routes.payment_routes import payment
 from routes.admin_routes import admin_bp
 
 app.register_blueprint(main_bp)
