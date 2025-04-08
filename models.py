@@ -79,6 +79,8 @@ class Image(db.Model):
         return f'<Image {self.id} - {self.category}>'
 
 
+from sqlalchemy.orm import relationship
+
 class Payment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
@@ -89,11 +91,13 @@ class Payment(db.Model):
     stripe_payment_id = db.Column(db.String(100))
     stripe_session_id = db.Column(db.String(100))
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    
 
+    # Add this relationship
+    package = relationship('Package', backref='payments')
+    
     def __repr__(self):
         return f'<Payment {self.id} - {self.status}>'
-    
+
     def formatted_amount(self):
         """Return the amount formatted as a currency string"""
         return f"₹{self.amount:,.2f}"
@@ -101,4 +105,4 @@ class Payment(db.Model):
     def formatted_date(self):
         """Return formatted date string"""
         return self.created_at.strftime("%d %b, %Y")
-
+        
