@@ -210,7 +210,7 @@
                             <td>{{ payment.user.name }}</td>
                             <td>{{ payment.package.name }}</td>
                             <td>₹{{ payment.amount }}</td>
-                            <td>{{ payment.date.strftime('%d %b %Y, %H:%M') }}</td>
+                            <td>{{ payment.created_at.strftime('%d %b %Y, %H:%M') }}</td>
                         </tr>
                         {% endfor %}
                     </tbody>
