@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField, SubmitField, TextAreaField, SelectField, FloatField, FileField, HiddenField
-from wtforms.validators import DataRequired, Email, EqualTo, Length, ValidationError
+from wtforms import StringField, PasswordField, BooleanField, SubmitField, TextAreaField, SelectField, FloatField, FileField, HiddenField, IntegerField
+from wtforms.validators import DataRequired, Email, EqualTo, Length, ValidationError, Optional
 from models import User
 
 class LoginForm(FlaskForm):
@@ -84,3 +84,15 @@ class ImageUploadForm(FlaskForm):
     ], validators=[DataRequired()])
     description = StringField('Image Usage/Description')
     submit = SubmitField('Upload Image')
+
+
+class PaymentForm(FlaskForm):
+    package_id = HiddenField('Package ID', validators=[DataRequired()])
+    name = StringField('Full Name', validators=[DataRequired(), Length(max=100)])
+    email = StringField('Email Address', validators=[DataRequired(), Email(), Length(max=120)])
+    phone = StringField('Phone Number', validators=[DataRequired(), Length(max=20)])
+    address = TextAreaField('Billing Address', validators=[DataRequired()])
+    travelers = IntegerField('Number of Travelers', validators=[DataRequired()])
+    date = StringField('Travel Date', validators=[DataRequired()])
+    submit = SubmitField('Proceed to Payment')
+    
