@@ -3081,3 +3081,73 @@ a:hover {
 .pagination .page-item.active .page-link {
     animation: float 3s ease-in-out infinite;
 }
+
+
+/* ============================
+   PAYMENT PAGES STYLES
+   ============================ */
+
+.success-card,
+.cancel-card {
+    border: none;
+}
+
+.success-card {
+    border-top: 5px solid #28a745;
+}
+
+.cancel-card {
+    border-top: 5px solid #dc3545;
+}
+
+.success-icon,
+.cancel-icon {
+    display: inline-block;
+}
+
+.payment-thumbnail {
+    width: 60px;
+    height: 40px;
+    background-size: cover;
+    background-position: center;
+    border-radius: 4px;
+}
+
+/* ============================
+   ERROR PAGES
+   ============================ */
+
+.error-page {
+    text-align: center;
+    padding: 5rem 0;
+}
+
+.error-message {
+    margin: 2rem 0;
+}
+
+/* ============================
+   RESPONSIVE ADJUSTMENTS
+   ============================ */
+
+@media (max-width: 767.98px) {
+    .hero-section {
+        padding: 8rem 0;
+    }
+    
+    .hero-content h1 {
+        font-size: 2.2rem;
+    }
+    
+    .booking-card.sticky-top {
+        position: relative;
+        top: 0 !important;
+        margin-top: 2rem;
+    }
+}
+
+@media (max-width: 991.98px) {
+    .feature-item {
+        margin-bottom: 1.5rem;
+    }
+}
