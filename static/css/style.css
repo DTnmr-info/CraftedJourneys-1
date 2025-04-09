@@ -235,7 +235,7 @@ a:hover {
 .login-btn:hover {
     background-color: #e68a26;
     border-color: #e68a26;
-    color: var(--white);
+    color: rgb(255, 255, 255);
 }
 
 .signup-btn {
@@ -249,7 +249,7 @@ a:hover {
 .signup-btn:hover {
     background-color: #e68a26;
     border-color: #e68a26;
-    color: var(--white);
+    color: rgb(255, 255, 255);
 }
 
 /* ============ HERO SECTION ============ */
