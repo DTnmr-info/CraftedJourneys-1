@@ -225,8 +225,8 @@ a:hover {
 }
 
 .login-btn {
-    background-color: var(--secondary-color);
-    border-color: var(--secondary-color);
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
     color: var(--white);
     border-radius: 50px;
     margin-left: 10px;
@@ -299,7 +299,7 @@ a:hover {
     align-items: center;
     text-align: center;
     color: var(--white);
-    margin-top: 76px;
+    margin-top: 73px;
 }
 
 .about-hero {
