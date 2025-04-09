@@ -147,6 +147,42 @@ def payments():
                            recent_payments=recent_payments)
 
 
+@admin_bp.route('/payments/export')
+@login_required
+def export_all_payments():
+    """Export all payment records as CSV"""
+    from io import StringIO
+    import csv
+    si = StringIO()
+    writer = csv.writer(si)
+
+    # Header
+    writer.writerow(['ID', 'User', 'Package', 'Amount', 'Status', 'Date'])
+
+    # Data rows
+    payments = Payment.query.order_by(Payment.created_at.desc()).all()
+    for p in payments:
+        writer.writerow([
+            p.id,
+            p.user.username,
+            p.package.name,
+            f"₹{p.amount:,.2f}",
+            p.status,
+            p.created_at.strftime("%d %b %Y, %H:%M")
+        ])
+
+    output = si.getvalue()
+    si.close()
+
+    from flask import Response
+    return Response(
+        output,
+        mimetype="text/csv",
+        headers={"Content-Disposition": "attachment;filename=payment_records.csv"}
+    )
+
+
+
 @admin_bp.route('/receipt/<int:payment_id>')
 @login_required
 def download_receipt(payment_id):
