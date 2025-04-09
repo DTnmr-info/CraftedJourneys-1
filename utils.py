@@ -53,8 +53,7 @@ def generate_receipt_pdf(payment):
     ))
     
     # Add company logo and title
-    elements.append(Image("static/assets/openart-image_fJzOJQBm_1742026809050_raw.jpg", width=6*cm, height=2*cm))
-    elements.append(Paragraph("Crafted Journeys", styles['CenteredTitle']))
+    elements.append(Image("static/assets/openart-image_fJzOJQBm_1742026809050_raw.jpg", width=6*cm, height=6*cm))
     elements.append(Paragraph("Payment Receipt", styles['CenteredTitle']))
     elements.append(Spacer(1, 0.5*cm))
     
