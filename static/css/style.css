@@ -10,10 +10,10 @@
 
 :root {
     /* Color Variables */
-    --primary-color: #ff9933; /* Orange */
+    --primary-color: rgb(15, 55, 81);; /* Orange */
     --primary-light: #ffb366; /* Light Orange */
     --primary-dark: #e68a26; /* Dark Orange */
-    --secondary-color: rgb(15, 55, 81); /* Dark Blue */
+    --secondary-color: #ff9933; /* Dark Blue */
     --secondary-light: #2d43a3; /* Light Blue */
     --secondary-dark: #121d53; /* Darker Blue */
     --accent-color: #34d399; /* Teal/Green for accents */
@@ -934,7 +934,7 @@ a:hover {
 
 /* ============ FOOTER ============ */
 .footer {
-    background-color: var(--secondary-color);
+    background-color: var(--primary-color);
     color: var(--white);
     padding: 80px 0 0;
 }
