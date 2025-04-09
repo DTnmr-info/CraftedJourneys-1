@@ -178,7 +178,7 @@ a:hover {
 /* ============ NAVIGATION ============ */
 .navbar {
     padding: 15px 0;
-    background-color: rgba(255, 255, 255, 0.95);
+    background-color: rgb(15, 55, 81);
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     transition: all 0.3s ease;
 }
@@ -188,7 +188,7 @@ a:hover {
     align-items: center;
     font-family: var(--heading-font);
     font-weight: 700;
-    color: var(--secondary-color);
+    color:rgb(255, 255, 255);
 }
 
 .navbar-brand img {
@@ -196,7 +196,7 @@ a:hover {
 }
 
 .navbar-nav .nav-link {
-    color: var(--secondary-color);
+    color: rgb(255, 255, 255);
     font-weight: 500;
     padding: 10px 15px;
     position: relative;
@@ -225,9 +225,17 @@ a:hover {
 }
 
 .login-btn {
-    border: 1px solid var(--secondary-color);
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    color: var(--white);
     border-radius: 50px;
     margin-left: 10px;
+}
+
+.signup-btn:hover {
+    background-color: #e68a26;
+    border-color: #e68a26;
+    color: var(--white);
 }
 
 .signup-btn {
