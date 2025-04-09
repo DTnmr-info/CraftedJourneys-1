@@ -204,7 +204,7 @@ a:hover {
 
 .navbar-nav .nav-link:hover,
 .navbar-nav .nav-link.active {
-    color: var(--primary-color);
+    color: var(--secondary-color);
 }
 
 .navbar-nav .nav-link::after {
@@ -212,7 +212,7 @@ a:hover {
     position: absolute;
     width: 0;
     height: 2px;
-    background-color: var(--primary-color);
+    background-color: var(--secondary-color);
     bottom: 5px;
     left: 50%;
     transform: translateX(-50%);
@@ -225,14 +225,14 @@ a:hover {
 }
 
 .login-btn {
-    background-color: var(--primary-color);
-    border-color: var(--primary-color);
+    background-color: var(--secondary-color);
+    border-color: var(--secondary-color);
     color: var(--white);
     border-radius: 50px;
     margin-left: 10px;
 }
 
-.signup-btn:hover {
+.login-btn:hover {
     background-color: #e68a26;
     border-color: #e68a26;
     color: var(--white);
