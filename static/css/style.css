@@ -2447,7 +2447,7 @@ a:hover {
 
 /* ============ ADMIN STYLES ============ */
 .admin-sidebar {
-    background-color: var(--secondary-color);
+    background-color: var(--primary-color);
     height: 100vh;
     position: fixed;
     width: 250px;
